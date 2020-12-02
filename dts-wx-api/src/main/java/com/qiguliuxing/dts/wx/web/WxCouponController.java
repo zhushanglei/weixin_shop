@@ -9,7 +9,6 @@ import java.util.Map;
 
 import javax.validation.constraints.NotNull;
 
-import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,8 +110,7 @@ public class WxCouponController {
 
 		List<DtsCouponUser> couponUserList = couponUserService.queryList(userId, null, status, page, size, sort, order);
 		List<CouponVo> couponVoList = change(couponUserList);
-		long total = PageInfo.of(couponUserList).getTotal();
-		//int total = couponService.queryTotal();
+		int total = couponService.queryTotal();
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("data", couponVoList);
 		data.put("count", total);
