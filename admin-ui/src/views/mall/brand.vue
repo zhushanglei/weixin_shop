@@ -46,7 +46,7 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-    
+
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
@@ -61,7 +61,7 @@
             <el-option v-for="item in adminList" :key="item.value" :label="item.label" :value="item.value"/>
           </el-select>
         </el-form-item>
-        
+
         <el-form-item label="介绍" prop="simpleDesc">
           <el-input v-model="dataForm.desc"/>
         </el-form-item>
@@ -158,7 +158,7 @@ export default {
       textMap: {
         update: '编辑',
         create: '创建',
-        shareUrl: '店铺推广码' 
+        shareUrl: '店铺推广码'
       },
       rules: {
         name: [

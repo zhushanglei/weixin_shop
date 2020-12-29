@@ -146,7 +146,7 @@
 </style>
 
 <script>
-import { listOrder, shipOrder, refundOrder, detailOrder , listShipChannel } from '@/api/order'
+import { listOrder, shipOrder, refundOrder, detailOrder, listShipChannel } from '@/api/order'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import checkPermission from '@/utils/permission' // 权限判断函数
 
@@ -224,7 +224,7 @@ export default {
       })
     },
     getListShipChannel() {
-        listShipChannel().then(response => {
+      listShipChannel().then(response => {
         this.shipChannelList = response.data.data.shipChannelList
       })
     },
