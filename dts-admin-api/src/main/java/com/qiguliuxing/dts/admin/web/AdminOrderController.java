@@ -120,8 +120,8 @@ public class AdminOrderController {
 	 * @param body 订单信息，{ orderId：xxx }
 	 * @return 订单操作结果
 	 */
-	@RequiresPermissions("admin:order:list")
-	@RequiresPermissionsDesc(menu = { "商场管理", "订单管理" }, button = "查询")
+	@RequiresPermissions("admin:order:listShipChannel")
+	@RequiresPermissionsDesc(menu = { "商场管理", "订单管理" }, button = "快递信息加载")
 	@GetMapping("/listShipChannel")
 	public Object listShipChannel() {
 		logger.info("【请求开始】商场管理->订单管理->快递信息加载");
