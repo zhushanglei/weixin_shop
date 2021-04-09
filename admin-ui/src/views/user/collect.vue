@@ -3,10 +3,10 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户ID"/>
-      <el-input v-model="listQuery.valueId" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品ID"/>
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
+      <el-input v-model="listQuery.userId" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入用户ID"/>
+      <el-input v-model="listQuery.valueId" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入商品ID"/>
+      <el-button class="filter-item" size="mini" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-button :loading="downloadLoading" size="mini" class="filter-item" type="warning" icon="el-icon-download" @click="handleDownload">导出</el-button>
     </div>
 
     <!-- 查询结果 -->
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { listCollect } from '@/api/user'
+import { listCollect } from '@/api/business/user'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {

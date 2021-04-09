@@ -3,33 +3,33 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.key" clearable class="filter-item" style="width: 200px;" placeholder="请输入对象KEY"/>
-      <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入对象名称"/>
-      <el-button v-permission="['GET /admin/storage/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button v-permission="['POST /admin/storage/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
+      <el-input v-model="listQuery.key" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入对象KEY"/>
+      <el-input v-model="listQuery.name" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入对象名称"/>
+      <el-button v-permission="['GET /admin/storage/list']" size="mini" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-button v-permission="['POST /admin/storage/create']" size="mini" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
+      <el-button :loading="downloadLoading" size="mini" class="filter-item" type="warning" icon="el-icon-download" @click="handleDownload">导出</el-button>
     </div>
 
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
 
-      <el-table-column align="center" label="对象KEY" prop="key"/>
+      <el-table-column align="center" min-width="120px" label="对象KEY" prop="key"/>
 
-      <el-table-column align="center" label="对象名称" prop="name"/>
+      <el-table-column align="center" min-width="150px" label="对象名称" prop="name"/>
 
-      <el-table-column align="center" label="对象类型" prop="type"/>
+      <el-table-column align="center" min-width="60px" label="对象类型" prop="type"/>
 
-      <el-table-column align="center" label="对象大小" prop="size"/>
+      <el-table-column align="center" min-width="80px" label="对象大小" prop="size" sortable/>
 
-      <el-table-column align="center" property="url" label="图片">
+      <el-table-column align="center" min-width="80px" property="url" label="图片">
         <template slot-scope="scope">
           <img :src="scope.row.url" width="40">
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="图片链接" prop="url"/>
+      <el-table-column align="center" min-width="180px" label="图片链接" prop="url"/>
 
-      <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+      <el-table-column align="center" min-width="120px" label="操作" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-permission="['POST /admin/storage/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button v-permission="['POST /admin/storage/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import { listStorage, createStorage, updateStorage, deleteStorage } from '@/api/storage'
+import { listStorage, createStorage, updateStorage, deleteStorage } from '@/api/business/storage'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {

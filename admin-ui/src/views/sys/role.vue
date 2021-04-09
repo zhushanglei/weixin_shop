@@ -3,9 +3,9 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.rolename" clearable class="filter-item" style="width: 200px;" placeholder="请输入角色名称"/>
-      <el-button v-permission="['GET /admin/role/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button v-permission="['POST /admin/role/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
+      <el-input v-model="listQuery.rolename" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入角色名称"/>
+      <el-button v-permission="['GET /admin/role/list']" size="mini" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-button v-permission="['POST /admin/role/create']" size="mini" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
     </div>
 
     <!-- 查询结果 -->
@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import { listRole, createRole, updateRole, deleteRole, getPermission, updatePermission } from '@/api/role'
+import { listRole, createRole, updateRole, deleteRole, getPermission, updatePermission } from '@/api/business/role'
 import Pagination from '@/components/Pagination'
 export default {
   name: 'Role',

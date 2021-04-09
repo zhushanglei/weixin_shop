@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { statGoods } from '@/api/stat'
+import { statGoods } from '@/api/business/stat'
 import VeLine from 'v-charts/lib/line'
 
 export default {

@@ -3,22 +3,22 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.title" clearable class="filter-item" style="width: 200px;" placeholder="请输入专题标题"/>
-      <el-input v-model="listQuery.subtitle" clearable class="filter-item" style="width: 200px;" placeholder="请输入专题子标题"/>
-      <el-button v-permission="['GET /admin/topic/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button v-permission="['POST /admin/topic/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
+      <el-input v-model="listQuery.title" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入专题标题"/>
+      <el-input v-model="listQuery.subtitle" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入专题子标题"/>
+      <el-button v-permission="['GET /admin/topic/list']" size="mini" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-button v-permission="['POST /admin/topic/create']" size="mini" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
+      <el-button :loading="downloadLoading" size="mini" class="filter-item" type="warning" icon="el-icon-download" @click="handleDownload">导出</el-button>
     </div>
 
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-      <el-table-column align="center" label="专题标题" prop="title"/>
+      <el-table-column align="center" label="专题标题" min-width="200" prop="title"/>
 
       <el-table-column align="center" label="专题子标题" min-width="200" prop="subtitle"/>
 
       <el-table-column align="center" property="picUrl" label="图片">
         <template slot-scope="scope">
-          <img :src="scope.row.picUrl" width="80">
+          <img :src="scope.row.picUrl" width="100">
         </template>
       </el-table-column>
 
@@ -33,9 +33,9 @@
 
       <el-table-column align="center" label="底价" prop="price"/>
 
-      <el-table-column align="center" label="阅读数量" prop="readCount"/>
+      <el-table-column align="center" label="阅读数量" prop="readCount" sortable/>
 
-      <el-table-column align="center" label="操作" min-width="200" class-name="small-padding fixed-width">
+      <el-table-column align="center" label="操作" min-width="150" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-permission="['POST /admin/topic/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button v-permission="['POST /admin/topic/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
@@ -139,8 +139,8 @@
 </style>
 
 <script>
-import { listTopic, createTopic, updateTopic, deleteTopic } from '@/api/topic'
-import { createStorage, uploadPath } from '@/api/storage'
+import { listTopic, createTopic, updateTopic, deleteTopic } from '@/api/business/topic'
+import { createStorage, uploadPath } from '@/api/business/storage'
 import BackToTop from '@/components/BackToTop'
 import Editor from '@tinymce/tinymce-vue'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination

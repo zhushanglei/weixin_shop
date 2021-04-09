@@ -3,11 +3,11 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.goodsSn" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品编号"/>
-      <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品名称"/>
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
+      <el-input v-model="listQuery.goodsSn" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入商品编号"/>
+      <el-input v-model="listQuery.name" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入商品名称"/>
+      <el-button size="mini" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-button size="mini" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
+      <el-button :loading="downloadLoading" size="mini" class="filter-item" type="warning" icon="el-icon-download" @click="handleDownload">导出</el-button>
     </div>
 
     <!-- 查询结果 -->
@@ -38,9 +38,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="商品编号" prop="goodsSn"/>
+      <el-table-column align="center" min-width="110" label="商品编号" prop="goodsSn"/>
 
-      <el-table-column align="center" min-width="100" label="名称" prop="name"/>
+      <el-table-column align="center" min-width="200" label="名称" prop="name" sortable/>
 
       <el-table-column align="center" property="iconUrl" label="图片">
         <template slot-scope="scope">
@@ -79,13 +79,15 @@
         </template>
       </el-table-column>
 
+      <!--
       <el-table-column align="center" label="是否在售" prop="isOnSale">
         <template slot-scope="scope">
           <el-tag :type="scope.row.isOnSale ? 'success' : 'error' ">{{ scope.row.isOnSale ? '在售' : '未售' }}</el-tag>
         </template>
       </el-table-column>
+      -->
 
-      <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+      <el-table-column align="center" label="操作" width="150" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
@@ -103,6 +105,9 @@
 </template>
 
 <style>
+	.el-dialog {
+    width: 60%;
+	}
   .table-expand {
     font-size: 0;
   }
@@ -121,7 +126,7 @@
 </style>
 
 <script>
-import { listGoods, deleteGoods } from '@/api/goods'
+import { listGoods, deleteGoods } from '@/api/business/goods'
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 

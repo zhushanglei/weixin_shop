@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import { readCoupon, listCouponUser } from '@/api/coupon'
+import { readCoupon, listCouponUser } from '@/api/business/coupon'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 const defaultTypeOptions = [

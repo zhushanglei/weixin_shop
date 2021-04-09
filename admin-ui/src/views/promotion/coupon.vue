@@ -3,58 +3,58 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入优惠券标题"/>
-      <el-select v-model="listQuery.type" clearable style="width: 200px" class="filter-item" placeholder="请选择优惠券类型">
+      <el-input v-model="listQuery.name" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入优惠券标题"/>
+      <el-select v-model="listQuery.type" clearable size="mini" style="width: 200px" class="filter-item" placeholder="请选择优惠券类型">
         <el-option v-for="type in typeOptions" :key="type.value" :label="type.label" :value="type.value"/>
       </el-select>
-      <el-select v-model="listQuery.status" clearable style="width: 200px" class="filter-item" placeholder="请选择优惠券状态">
+      <el-select v-model="listQuery.status" clearable size="mini" style="width: 200px" class="filter-item" placeholder="请选择优惠券状态">
         <el-option v-for="type in statusOptions" :key="type.value" :label="type.label" :value="type.value"/>
       </el-select>
-      <el-button v-permission="['GET /admin/coupon/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button v-permission="['POST /admin/coupon/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
+      <el-button v-permission="['GET /admin/coupon/list']" size="mini" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-button v-permission="['POST /admin/coupon/create']" size="mini" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
+      <el-button :loading="downloadLoading" size="mini" class="filter-item" type="warning" icon="el-icon-download" @click="handleDownload">导出</el-button>
     </div>
 
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
 
-      <el-table-column align="center" label="优惠券ID" prop="id" sortable/>
+      <el-table-column align="center" min-width="100px" label="优惠券ID" prop="id" sortable/>
 
-      <el-table-column align="center" label="优惠券名称" prop="name"/>
+      <el-table-column align="center" min-width="100px" label="优惠券名称" prop="name"/>
+      <!--
+      <el-table-column align="center" min-width="80px" label="介绍" prop="desc"/>
 
-      <el-table-column align="center" label="介绍" prop="desc"/>
-
-      <el-table-column align="center" label="标签" prop="tag"/>
-
-      <el-table-column align="center" label="最低消费" prop="min">
+      <el-table-column align="center" min-width="100px" label="标签" prop="tag"/>
+      -->
+      <el-table-column align="center" min-width="100px" label="最低消费" prop="min">
         <template slot-scope="scope">满{{ scope.row.min }}元可用</template>
       </el-table-column>
 
-      <el-table-column align="center" label="满减金额" prop="discount">
+      <el-table-column align="center" min-width="100px" label="满减金额" prop="discount">
         <template slot-scope="scope">减免{{ scope.row.discount }}元</template>
       </el-table-column>
 
-      <el-table-column align="center" label="每人限领" prop="limit">
+      <el-table-column align="center" min-width="80px" label="每人限领" prop="limit">
         <template slot-scope="scope">{{ scope.row.limit != 0 ? scope.row.limit : "不限" }}</template>
       </el-table-column>
 
-      <el-table-column align="center" label="商品使用范围" prop="goodsType">
+      <el-table-column align="center" min-width="100px" label="商品使用范围" prop="goodsType">
         <template slot-scope="scope">{{ scope.row.goodsType | formatGoodsType }}</template>
       </el-table-column>
 
-      <el-table-column align="center" label="优惠券类型" prop="type">
+      <el-table-column align="center" min-width="100px" label="优惠券类型" prop="type">
         <template slot-scope="scope">{{ scope.row.type | formatType }}</template>
       </el-table-column>
 
-      <el-table-column align="center" label="优惠券数量" prop="total">
+      <el-table-column align="center" min-width="120px" label="优惠券数量" prop="total" sortable>
         <template slot-scope="scope">{{ scope.row.total != 0 ? scope.row.total : "不限" }}</template>
       </el-table-column>
 
-      <el-table-column align="center" label="状态" prop="status">
+      <el-table-column align="center" min-width="60px" label="状态" prop="status">
         <template slot-scope="scope">{{ scope.row.status | formatStatus }}</template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" width="300" class-name="small-padding fixed-width">
+      <el-table-column align="center" min-width="250px" label="操作" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-permission="['GET /admin/coupon/read']" type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
           <el-button v-permission="['POST /admin/coupon/update']" type="info" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
@@ -119,11 +119,11 @@
         </el-form-item>
         <el-form-item v-show="dataForm.timeType === 1">
           <el-col :span="11">
-            <el-date-picker v-model="dataForm.startTime" type="datetime" placeholder="选择日期" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%;"/>
+            <el-date-picker v-model="dataForm.startTime" type="date" placeholder="选择日期" value-format="yyyy-MM-dd" style="width: 100%;"/>
           </el-col>
           <el-col :span="2" class="line">至</el-col>
           <el-col :span="11">
-            <el-date-picker v-model="dataForm.endTime" type="datetime" placeholder="选择日期" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%;"/>
+            <el-date-picker v-model="dataForm.endTime" type="date" placeholder="选择日期" value-format="yyyy-MM-dd" style="width: 100%;"/>
           </el-col>
         </el-form-item>
         <el-form-item label="商品限制范围">
@@ -177,7 +177,7 @@
 </style>
 
 <script>
-import { listCoupon, createCoupon, updateCoupon, deleteCoupon } from '@/api/coupon'
+import { listCoupon, createCoupon, updateCoupon, deleteCoupon } from '@/api/business/coupon'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 const defaultTypeOptions = [

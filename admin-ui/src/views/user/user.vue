@@ -3,23 +3,23 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.username" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户名"/>
-      <el-input v-model="listQuery.mobile" clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号"/>
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
+      <el-input v-model="listQuery.username" clearable size="small" class="filter-item" style="width: 200px;" placeholder="请输入用户名"/>
+      <el-input v-model="listQuery.mobile" clearable size="small" class="filter-item" style="width: 200px;" placeholder="请输入手机号"/>
+      <el-button class="filter-item" type="primary" size="mini" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-button :loading="downloadLoading" size="mini" class="filter-item" type="warning" icon="el-icon-download" @click="handleDownload">导出</el-button>
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" size="small" element-loading-text="正在查询中..." border fit highlight-current-row>
       <el-table-column align="center" width="100px" label="用户ID" prop="id" sortable/>
 
-      <el-table-column align="center" label="用户名" prop="username"/>
+      <el-table-column align="center" label="用户名" prop="nickname"/>
 
       <el-table-column align="center" label="手机号码" prop="mobile"/>
 
       <el-table-column align="center" label="性别" prop="gender">
         <template slot-scope="scope">
-          <el-tag >{{ genderDic[scope.row.gender] }}</el-tag>
+          {{ genderDic[scope.row.gender] }}
         </template>
       </el-table-column>
 
@@ -27,18 +27,18 @@
 
       <el-table-column align="center" label="用户等级" prop="userLevel">
         <template slot-scope="scope">
-          <el-tag >{{ levelDic[scope.row.userLevel] }}</el-tag>
+          {{ levelDic[scope.row.userLevel] }}
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="状态" prop="status">
         <template slot-scope="scope">
-          <el-tag>{{ statusDic[scope.row.status] }}</el-tag>
+          {{ statusDic[scope.row.status] }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-permission="['GET /admin/user/detailApprove']" v-if="scope.row.status==0 && scope.row.userLevel==2" type="primary" @click="handleDetail(scope.row)">推广代理</el-button>
+          <el-button v-permission="['GET /admin/user/detailApprove']" v-if="scope.row.status==0 && scope.row.userLevel==2" type="primary" size="mini" @click="handleDetail(scope.row)">推广代理</el-button>
           <el-button v-permission="['POST /admin/user/approveAgency']" v-else-if="scope.row.status==3" type="primary" size="mini" @click="handleApproveAgency(scope.row)">审批</el-button>
           <el-button v-permission="['GET /admin/user/detailApprove']" v-else type="info" size="mini" >非代理</el-button>
         </template>
@@ -76,7 +76,7 @@
 </template>
 
 <script>
-import { fetchList, approveAgency, detailApprove } from '@/api/user'
+import { fetchList, approveAgency, detailApprove } from '@/api/business/user'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {

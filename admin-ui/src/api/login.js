@@ -1,9 +1,12 @@
 import request from '@/utils/request'
 
-export function loginByUsername(username, password) {
+// 登录方法
+export function loginByUsername(username, password, code, uuid) {
   const data = {
     username,
-    password
+    password,
+    code,
+    uuid
   }
   return request({
     url: '/auth/login',
@@ -12,6 +15,15 @@ export function loginByUsername(username, password) {
   })
 }
 
+// 获取用户详细信息
+export function getUserInfo() {
+  return request({
+    url: '/auth/info',
+    method: 'get'
+  })
+}
+
+// 退出方法
 export function logout() {
   return request({
     url: '/auth/logout',
@@ -19,11 +31,10 @@ export function logout() {
   })
 }
 
-export function getUserInfo(token) {
+// 获取验证码
+export function getCodeImg() {
   return request({
-    url: '/auth/info',
-    method: 'get',
-    params: { token }
+    url: '/auth/captchaImage',
+    method: 'get'
   })
 }
-

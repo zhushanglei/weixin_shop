@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { statOrder } from '@/api/stat'
+import { statOrder } from '@/api/business/stat'
 import VeLine from 'v-charts/lib/line'
 export default {
   components: { VeLine },

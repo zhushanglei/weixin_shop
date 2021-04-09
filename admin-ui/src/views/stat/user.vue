@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { statUser } from '@/api/stat'
+import { statUser } from '@/api/business/stat'
 import VeHistogram from 'v-charts/lib/histogram'
 
 export default {

@@ -3,17 +3,17 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.id" clearable class="filter-item" style="width: 200px;" placeholder="请输入类目ID"/>
-      <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入类目名称"/>
-      <el-button v-permission="['GET /admin/category/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button v-permission="['POST /admin/category/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
+      <el-input v-model="listQuery.id" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入类目ID"/>
+      <el-input v-model="listQuery.name" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入类目名称"/>
+      <el-button v-permission="['GET /admin/category/list']" size="mini" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-button v-permission="['POST /admin/category/create']" size="mini" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
+      <el-button :loading="downloadLoading" size="mini" class="filter-item" type="warning" icon="el-icon-download" @click="handleDownload">导出</el-button>
     </div>
 
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
 
-      <el-table-column align="center" label="类目ID" prop="id"/>
+      <el-table-column align="center" label="类目ID" prop="id" sortable/>
 
       <el-table-column align="center" label="类目名" prop="name"/>
 
@@ -136,8 +136,8 @@
 </style>
 
 <script>
-import { listCategory, listCatL1, createCategory, updateCategory, deleteCategory } from '@/api/category'
-import { uploadPath } from '@/api/storage'
+import { listCategory, listCatL1, createCategory, updateCategory, deleteCategory } from '@/api/business/category'
+import { uploadPath } from '@/api/business/storage'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 

@@ -74,8 +74,8 @@
 </style>
 
 <script>
-import { publishArticle } from '@/api/article'
-import { createStorage, uploadPath } from '@/api/storage'
+import { publishArticle } from '@/api/business/article'
+import { createStorage, uploadPath } from '@/api/business/storage'
 import Editor from '@tinymce/tinymce-vue'
 import { MessageBox } from 'element-ui'
 import { getToken } from '@/utils/auth'

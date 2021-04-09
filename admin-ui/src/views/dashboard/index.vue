@@ -47,26 +47,59 @@
         </div>
       </el-col>
     </el-row>
+
+    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
+      <line-chart :chart-data="userOrderCnt" />
+    </el-row>
+
+    <el-row :gutter="32">
+      <el-col :xs="24" :sm="24" :lg="16">
+        <div class="chart-wrapper">
+          <bar-chart :chart-data="orderAmts"/>
+        </div>
+      </el-col>
+      <el-col :xs="24" :sm="24" :lg="8">
+        <div class="chart-wrapper">
+          <pie-chart :chart-data="categorySell"/>
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
-import { info } from '@/api/dashboard'
+import { info, chart } from '@/api/business/dashboard'
 import CountTo from 'vue-count-to'
+import LineChart from './LineChart'
+import PieChart from './PieChart'
+import BarChart from './BarChart'
 
 export default {
   components: {
-    CountTo
+    CountTo,
+    LineChart,
+    PieChart,
+    BarChart
   },
   data() {
     return {
       userTotal: 0,
       goodsTotal: 0,
       productTotal: 0,
-      orderTotal: 0
+      orderTotal: 0,
+      userOrderCnt: { dayData: [], userCnt: [], orderCnt: [] },
+      orderAmts: { dayData: [], orderAmtData: [], orderCntData: [] },
+      categorySell: { categoryNames: [], categorySellData: [] }
     }
   },
+  mounted() {
+  },
   created() {
+    chart().then(response => {
+      this.userOrderCnt = response.data.data.userOrderCnt
+      this.orderAmts = response.data.data.orderAmts
+      this.categorySell = response.data.data.categorySell
+    })
     info().then(response => {
       this.userTotal = response.data.data.userTotal
       this.goodsTotal = response.data.data.goodsTotal

@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { changePassword } from '@/api/profile'
+import { changePassword } from '@/api/business/profile'
 
 export default {
   name: 'ChangePassword',

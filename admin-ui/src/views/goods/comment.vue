@@ -3,32 +3,32 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户ID"/>
-      <el-input v-model="listQuery.valueId" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品ID"/>
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
+      <el-input v-model="listQuery.userId" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入用户ID"/>
+      <el-input v-model="listQuery.valueId" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入商品ID"/>
+      <el-button class="filter-item" size="mini" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-button :loading="downloadLoading" size="mini" class="filter-item" type="warning" icon="el-icon-download" @click="handleDownload">导出</el-button>
     </div>
 
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
 
-      <el-table-column align="center" label="用户ID" prop="userId"/>
+      <el-table-column align="center" min-width="100px" label="用户ID" prop="userId"/>
 
-      <el-table-column align="center" label="商品ID" prop="valueId"/>
+      <el-table-column align="center" min-width="100px" label="商品ID" prop="valueId"/>
 
-      <el-table-column align="center" label="打分" prop="star"/>
+      <el-table-column align="center" min-width="80px" label="打分" prop="star" sortable/>
 
-      <el-table-column align="center" label="评论内容" prop="content"/>
+      <el-table-column align="left" min-width="200px" label="评论内容" prop="content"/>
 
-      <el-table-column align="center" label="评论图片" prop="picUrls">
+      <el-table-column align="center" min-width="200px" label="评论图片" prop="picUrls">
         <template slot-scope="scope">
           <img v-for="item in scope.row.picUrls" :key="item" :src="item" width="40">
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="时间" prop="addTime"/>
+      <el-table-column align="center" min-width="120px" label="时间" prop="addTime"/>
 
-      <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+      <el-table-column align="center" min-width="150px" label="操作" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleReply(scope.row)">回复</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
@@ -55,8 +55,8 @@
 </template>
 
 <script>
-import { listComment, deleteComment } from '@/api/comment'
-import { replyComment } from '@/api/order'
+import { listComment, deleteComment } from '@/api/business/comment'
+import { replyComment } from '@/api/business/order'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {

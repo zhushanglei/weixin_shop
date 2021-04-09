@@ -67,8 +67,8 @@
 </style>
 
 <script>
-import { detailArticle, editArticle } from '@/api/article'
-import { createStorage, uploadPath } from '@/api/storage'
+import { detailArticle, editArticle } from '@/api/business/article'
+import { createStorage, uploadPath } from '@/api/business/storage'
 import Editor from '@tinymce/tinymce-vue'
 import { MessageBox } from 'element-ui'
 import { getToken } from '@/utils/auth'

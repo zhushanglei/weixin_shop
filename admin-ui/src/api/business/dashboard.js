@@ -7,3 +7,11 @@ export function info(query) {
     params: query
   })
 }
+
+export function chart(query) {
+  return request({
+    url: '/dashboard/chart',
+    method: 'get',
+    params: query
+  })
+}

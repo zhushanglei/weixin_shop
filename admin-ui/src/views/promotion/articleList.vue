@@ -3,15 +3,15 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.title" clearable class="filter-item" style="width: 200px;" placeholder="请输入公告标题..."/>
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
+      <el-input v-model="listQuery.title" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入公告标题..."/>
+      <el-button class="filter-item" size="mini" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-button class="filter-item" size="mini" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
     </div>
 
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
 
-      <el-table-column align="center" label="类型" prop="type">
+      <el-table-column align="center" label="类型" prop="type" sortable>
         <template slot-scope="scope">
           <el-tag v-if="scope.row.type=='1'" type="success">公告</el-tag>
           <el-tag v-else-if="scope.row.type=='0'" type="success">通知</el-tag>
@@ -57,7 +57,7 @@
 </style>
 
 <script>
-import { listArticle, deleteArticle } from '@/api/article'
+import { listArticle, deleteArticle } from '@/api/business/article'
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 

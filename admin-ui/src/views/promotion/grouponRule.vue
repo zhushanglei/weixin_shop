@@ -3,13 +3,14 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.goodsId" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品编号"/>
-      <el-button v-permission="['GET /admin/groupon/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button v-permission="['POST /admin/groupon/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
+      <el-input v-model="listQuery.goodsId" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入商品编号"/>
+      <el-button v-permission="['GET /admin/groupon/list']" size="mini" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-button v-permission="['POST /admin/groupon/create']" size="mini" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
       <el-button
         :loading="downloadLoading"
+        size="mini"
         class="filter-item"
-        type="primary"
+        type="warning"
         icon="el-icon-download"
         @click="handleDownload">导出
       </el-button>
@@ -24,9 +25,9 @@
       border
       fit
       highlight-current-row>
-      <el-table-column align="center" label="商品ID" prop="goodsId"/>
+      <el-table-column align="center" min-width="80px" label="商品ID" prop="goodsId"/>
 
-      <el-table-column align="center" min-width="100" label="名称" prop="goodsName"/>
+      <el-table-column align="center" min-width="200" label="名称" prop="goodsName"/>
 
       <el-table-column align="center" property="picUrl" label="图片">
         <template slot-scope="scope">
@@ -34,15 +35,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="团购优惠" prop="discount"/>
+      <el-table-column align="center" min-width="80px" label="团购优惠" prop="discount" sortable/>
 
-      <el-table-column align="center" label="团购要求" prop="discountMember"/>
+      <el-table-column align="center" min-width="80px" label="团购要求" prop="discountMember"/>
 
-      <el-table-column align="center" label="开始时间" prop="addTime"/>
+      <el-table-column align="center" min-width="120px" label="开始时间" prop="addTime"/>
 
-      <el-table-column align="center" label="结束时间" prop="expireTime"/>
+      <el-table-column align="center" min-width="120px" label="结束时间" prop="expireTime"/>
 
-      <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
+      <el-table-column align="center" min-width="150px" label="操作" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-permission="['POST /admin/groupon/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button v-permission="['POST /admin/groupon/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
@@ -94,7 +95,7 @@
 </template>
 
 <script>
-import { listGroupon, publishGroupon, deleteGroupon, editGroupon } from '@/api/groupon'
+import { listGroupon, publishGroupon, deleteGroupon, editGroupon } from '@/api/business/groupon'
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
