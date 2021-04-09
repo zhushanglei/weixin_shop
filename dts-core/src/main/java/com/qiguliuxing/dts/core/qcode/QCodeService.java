@@ -70,17 +70,22 @@ public class QCodeService {
 
 	/**
 	 * 创建商品分享图
-	 *
+	 * 
+	 * @param shareUserId
 	 * @param goodId
 	 * @param goodPicUrl
 	 * @param goodName
 	 */
-	public String createGoodShareImage(String goodId, String goodPicUrl, String goodName,BigDecimal counterPrice,BigDecimal retailPrice) {
+	public String createGoodShareImage(Integer shareUserId,String goodId, String goodPicUrl, String goodName,BigDecimal counterPrice,BigDecimal retailPrice) {
 		if (!SystemConfig.isAutoCreateShareImage())
 			return "";
 		try {
 			// 创建该商品的二维码
-			File file = wxMaService.getQrcodeService().createWxaCodeUnlimit("goods," + goodId, "pages/index/index");
+			String scene = "goods," + goodId;
+			if (shareUserId != null ) {
+				scene = scene + ",user," + shareUserId;
+			}
+			File file = wxMaService.getQrcodeService().createWxaCodeUnlimit(scene, "pages/index/index");
 			FileInputStream inputStream = new FileInputStream(file);
 			// 将商品图片，商品名字,商城名字画到模版图中
 			byte[] imageData = drawPicture(inputStream, goodPicUrl,goodName,counterPrice,retailPrice);
@@ -361,12 +366,25 @@ public class QCodeService {
 		return bs.toByteArray();
 	}
 
-	public String createBrandImage(Integer brandId, String picUrl, String name, String defaultCategory) {
+	/**
+	 * 创建商品的分享海报
+	 * @param shareUserId
+	 * @param brandId
+	 * @param picUrl
+	 * @param name
+	 * @param defaultCategory
+	 * @return
+	 */
+	public String createBrandImage(Integer shareUserId,Integer brandId, String picUrl, String name, String defaultCategory) {
 		if (!SystemConfig.isAutoCreateShareImage())
 			return "";
 		try {
 			// 创建该商品的二维码
-			File file = wxMaService.getQrcodeService().createWxaCodeUnlimit("brand," + brandId, "pages/index/index");
+			String scene = "brand," + brandId;
+			if (shareUserId != null ) {
+				scene = scene + ",user," + shareUserId;
+			}
+			File file = wxMaService.getQrcodeService().createWxaCodeUnlimit(scene, "pages/index/index");
 			FileInputStream inputStream = new FileInputStream(file);
 			// 将商品图片，商品名字,商城名字画到模版图中
 			byte[] imageData = drawBrandPicture(inputStream, picUrl,name,defaultCategory);

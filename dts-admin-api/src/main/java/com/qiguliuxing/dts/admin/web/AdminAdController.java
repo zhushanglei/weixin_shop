@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.admin.annotation.RequiresPermissionsDesc;
+import com.qiguliuxing.dts.admin.util.AuthSupport;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.core.validator.Order;
 import com.qiguliuxing.dts.core.validator.Sort;
@@ -44,7 +45,7 @@ public class AdminAdController {
 			@RequestParam(defaultValue = "10") Integer limit,
 			@Sort @RequestParam(defaultValue = "add_time") String sort,
 			@Order @RequestParam(defaultValue = "desc") String order) {
-		logger.info("【请求开始】推广管理->广告管理->查询,请求参数:name:{},content:{},page:{}", name, content, page);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 操作人:[" + AuthSupport.userName()+ "] 推广管理->广告管理->查询,请求参数:name:{},content:{},page:{}", name, content, page);
 
 		List<DtsAd> adList = adService.querySelective(name, content, page, limit, sort, order);
 		long total = PageInfo.of(adList).getTotal();
@@ -72,7 +73,7 @@ public class AdminAdController {
 	@RequiresPermissionsDesc(menu = { "推广管理", "广告管理" }, button = "添加")
 	@PostMapping("/create")
 	public Object create(@RequestBody DtsAd ad) {
-		logger.info("【请求开始】推广管理->广告管理->添加,请求参数:ad:{}", JSONObject.toJSONString(ad));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 推广管理->广告管理->添加,请求参数:ad:{}", JSONObject.toJSONString(ad));
 
 		Object error = validate(ad);
 		if (error != null) {
@@ -89,7 +90,7 @@ public class AdminAdController {
 	@RequiresPermissionsDesc(menu = { "推广管理", "广告管理" }, button = "详情")
 	@GetMapping("/read")
 	public Object read(@NotNull Integer id) {
-		logger.info("【请求开始】推广管理->广告管理->详情,请求参数:id:{}", id);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 推广管理->广告管理->详情,请求参数:id:{}", id);
 
 		DtsAd brand = adService.findById(id);
 
@@ -101,7 +102,7 @@ public class AdminAdController {
 	@RequiresPermissionsDesc(menu = { "推广管理", "广告管理" }, button = "编辑")
 	@PostMapping("/update")
 	public Object update(@RequestBody DtsAd ad) {
-		logger.info("【请求开始】推广管理->广告管理->编辑,请求参数:ad:{}", JSONObject.toJSONString(ad));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 推广管理->广告管理->编辑,请求参数:ad:{}", JSONObject.toJSONString(ad));
 
 		Object error = validate(ad);
 		if (error != null) {
@@ -120,7 +121,7 @@ public class AdminAdController {
 	@RequiresPermissionsDesc(menu = { "推广管理", "广告管理" }, button = "删除")
 	@PostMapping("/delete")
 	public Object delete(@RequestBody DtsAd ad) {
-		logger.info("【请求开始】推广管理->广告管理->删除,请求参数:ad:{}", JSONObject.toJSONString(ad));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 推广管理->广告管理->删除,请求参数:ad:{}", JSONObject.toJSONString(ad));
 
 		Integer id = ad.getId();
 		if (id == null) {

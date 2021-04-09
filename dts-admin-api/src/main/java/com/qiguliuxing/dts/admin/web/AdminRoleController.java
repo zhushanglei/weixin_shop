@@ -29,6 +29,7 @@ import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.admin.annotation.RequiresPermissionsDesc;
 import com.qiguliuxing.dts.admin.util.AdminResponseCode;
 import com.qiguliuxing.dts.admin.util.AdminResponseUtil;
+import com.qiguliuxing.dts.admin.util.AuthSupport;
 import com.qiguliuxing.dts.admin.util.PermVo;
 import com.qiguliuxing.dts.admin.util.Permission;
 import com.qiguliuxing.dts.admin.util.PermissionUtil;
@@ -59,7 +60,7 @@ public class AdminRoleController {
 			@RequestParam(defaultValue = "10") Integer limit,
 			@Sort @RequestParam(defaultValue = "add_time") String sort,
 			@Order @RequestParam(defaultValue = "desc") String order) {
-		logger.info("【请求开始】系统管理->角色管理->角色查询,请求参数,name:{},page:{}", name, page);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 系统管理->角色管理->角色查询,请求参数,name:{},page:{}", name, page);
 
 		List<DtsRole> roleList = roleService.querySelective(name, page, limit, sort, order);
 		long total = PageInfo.of(roleList).getTotal();
@@ -74,7 +75,7 @@ public class AdminRoleController {
 	@GetMapping("/options")
 	public Object options() {
 		List<DtsRole> roleList = roleService.queryAll();
-		logger.info("【请求开始】系统管理->角色管理->查询所有角色");
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 系统管理->角色管理->查询所有角色");
 
 		List<Map<String, Object>> options = new ArrayList<>(roleList.size());
 		for (DtsRole role : roleList) {
@@ -92,7 +93,7 @@ public class AdminRoleController {
 	@RequiresPermissionsDesc(menu = { "系统管理", "角色管理" }, button = "角色详情")
 	@GetMapping("/read")
 	public Object read(@NotNull Integer id) {
-		logger.info("【请求开始】系统管理->角色管理->角色详情,请求参数,id:{}", id);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 系统管理->角色管理->角色详情,请求参数,id:{}", id);
 
 		DtsRole role = roleService.findById(id);
 
@@ -113,7 +114,7 @@ public class AdminRoleController {
 	@RequiresPermissionsDesc(menu = { "系统管理", "角色管理" }, button = "角色添加")
 	@PostMapping("/create")
 	public Object create(@RequestBody DtsRole role) {
-		logger.info("【请求开始】系统管理->角色管理->角色添加,请求参数:{}", JSONObject.toJSONString(role));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 系统管理->角色管理->角色添加,请求参数:{}", JSONObject.toJSONString(role));
 
 		Object error = validate(role);
 		if (error != null) {
@@ -135,7 +136,7 @@ public class AdminRoleController {
 	@RequiresPermissionsDesc(menu = { "系统管理", "角色管理" }, button = "角色编辑")
 	@PostMapping("/update")
 	public Object update(@RequestBody DtsRole role) {
-		logger.info("【请求开始】系统管理->角色管理->角色编辑,请求参数:{}", JSONObject.toJSONString(role));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 系统管理->角色管理->角色编辑,请求参数:{}", JSONObject.toJSONString(role));
 
 		Object error = validate(role);
 		if (error != null) {
@@ -151,7 +152,7 @@ public class AdminRoleController {
 	@RequiresPermissionsDesc(menu = { "系统管理", "角色管理" }, button = "角色删除")
 	@PostMapping("/delete")
 	public Object delete(@RequestBody DtsRole role) {
-		logger.info("【请求开始】系统管理->角色管理->角色删除,请求参数,id:{}", JSONObject.toJSONString(role));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 系统管理->角色管理->角色删除,请求参数,id:{}", JSONObject.toJSONString(role));
 
 		Integer id = role.getId();
 		if (id == null) {
@@ -201,7 +202,7 @@ public class AdminRoleController {
 	@RequiresPermissionsDesc(menu = { "系统管理", "角色管理" }, button = "权限详情")
 	@GetMapping("/permissions")
 	public Object getPermissions(Integer roleId) {
-		logger.info("【请求开始】系统管理->角色管理->权限详情,请求参数,roleId:{}", roleId);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 系统管理->角色管理->权限详情,请求参数,roleId:{}", roleId);
 
 		List<PermVo> systemPermissions = getSystemPermissions();
 		Set<String> assignedPermissions = getAssignedPermissions(roleId);
@@ -224,7 +225,7 @@ public class AdminRoleController {
 	@RequiresPermissionsDesc(menu = { "系统管理", "角色管理" }, button = "权限变更")
 	@PostMapping("/permissions")
 	public Object updatePermissions(@RequestBody String body) {
-		logger.info("【请求开始】系统管理->角色管理->权限变更,请求参数,body:{}", body);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 系统管理->角色管理->权限变更,请求参数,body:{}", body);
 
 		Integer roleId = JacksonUtil.parseInteger(body, "roleId");
 		List<String> permissions = JacksonUtil.parseStringList(body, "permissions");

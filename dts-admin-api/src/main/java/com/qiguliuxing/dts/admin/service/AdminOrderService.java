@@ -59,13 +59,38 @@ public class AdminOrderService {
 	 */
 	@Autowired
 	private NotifyService notifyService;
+	
+	@Autowired
+	private AdminDataAuthService adminDataAuthService;
 
 	public Object list(Integer userId, String orderSn, List<Short> orderStatusArray, Integer page, Integer limit,
 			String sort, String order) {
-		List<DtsOrder> orderList = orderService.querySelective(userId, orderSn, orderStatusArray, page, limit, sort,
-				order);
-		long total = PageInfo.of(orderList).getTotal();
+		
+		// 需要区分数据权限，如果属于品牌商管理员，则需要获取当前用户管理品牌店铺
+		List<Integer> brandIds = null;
+		if (adminDataAuthService.isBrandManager()) {
+			brandIds = adminDataAuthService.getBrandIds();
+			logger.info("运营商管理角色操作，需控制数据权限，brandIds:{}", JSONObject.toJSONString(brandIds));
+			
+			if (brandIds == null || brandIds.size() == 0) {//如果尚未管理任何入驻店铺，则返回空数据
+				Map<String, Object> data = new HashMap<>();
+				data.put("total", 0L);
+				data.put("items", null);
 
+				logger.info("【请求结束】商场管理->订单管理->查询,响应结果:{}", JSONObject.toJSONString(data));
+				return ResponseUtil.ok(data);
+			}
+		}
+		List<DtsOrder> orderList = null;
+		long total = 0L;
+		if (brandIds == null || brandIds.size() == 0) {
+			orderList = orderService.querySelective(userId, orderSn, orderStatusArray, page, limit, sort,order);
+			total = PageInfo.of(orderList).getTotal();
+		} else {
+			orderList = orderService.queryBrandSelective(brandIds,userId, orderSn, orderStatusArray, page, limit, sort,order);
+			total = PageInfo.of(orderList).getTotal();
+		}
+		
 		Map<String, Object> data = new HashMap<>();
 		data.put("total", total);
 		data.put("items", orderList);

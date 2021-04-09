@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.admin.annotation.RequiresPermissionsDesc;
+import com.qiguliuxing.dts.admin.util.AuthSupport;
 import com.qiguliuxing.dts.core.qcode.QCodeService;
 import com.qiguliuxing.dts.core.util.JacksonUtil;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
@@ -28,6 +29,7 @@ import com.qiguliuxing.dts.core.validator.Order;
 import com.qiguliuxing.dts.core.validator.Sort;
 import com.qiguliuxing.dts.db.domain.DtsUser;
 import com.qiguliuxing.dts.db.domain.DtsUserAccount;
+import com.qiguliuxing.dts.db.service.DtsAccountService;
 import com.qiguliuxing.dts.db.service.DtsUserService;
 
 @RestController
@@ -41,6 +43,9 @@ public class AdminUserController {
 	
 	@Autowired
 	private QCodeService qCodeService;
+	
+	@Autowired
+	private DtsAccountService accountService;
 
 	@RequiresPermissions("admin:user:list")
 	@RequiresPermissionsDesc(menu = { "用户管理", "会员管理" }, button = "查询")
@@ -49,7 +54,7 @@ public class AdminUserController {
 			@RequestParam(defaultValue = "10") Integer limit,
 			@Sort @RequestParam(defaultValue = "add_time") String sort,
 			@Order @RequestParam(defaultValue = "desc") String order) {
-		logger.info("【请求开始】用户管理->会员管理->查询,请求参数,username:{},code:{},page:{}", username, mobile, page);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 用户管理->会员管理->查询,请求参数,username:{},code:{},page:{}", username, mobile, page);
 
 		List<DtsUser> userList = userService.querySelective(username, mobile, page, limit, sort, order);
 		long total = PageInfo.of(userList).getTotal();
@@ -71,7 +76,7 @@ public class AdminUserController {
 	@RequiresPermissionsDesc(menu = { "用户管理", "会员管理" }, button = "代理详情")
 	@GetMapping("/detailApprove")
 	public Object detailApprove(@NotNull Integer id) {
-		logger.info("【请求开始】用户管理->会员管理->代理详情,请求参数:id:{}", id);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 用户管理->会员管理->代理详情,请求参数:id:{}", id);
 		
 		DtsUserAccount dbAccount = userService.detailApproveByUserId(id);
 		if (dbAccount == null) {
@@ -86,7 +91,7 @@ public class AdminUserController {
 	@RequiresPermissionsDesc(menu = { "用户管理", "会员管理" }, button = "代理审批")
 	@PostMapping("/approveAgency")
 	public Object approveAgency(@RequestBody String body) {
-		logger.info("【请求开始】用户管理->会员管理->代理审批,请求参数:{}",body);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 用户管理->会员管理->代理审批,请求参数:{}",body);
 		
 		Integer userId = JacksonUtil.parseInteger(body, "userId");
 		Integer settlementRate = JacksonUtil.parseInteger(body, "settlementRate");
@@ -101,7 +106,18 @@ public class AdminUserController {
 			 */
 			String shareUrl = qCodeService.createShareUserImage(userId);
 			
+			/**
+			 * 结算当前用户的订单佣金给其代理
+			 * 在用户审批通过成为代理用户之前下的订单，结算佣金应归属于前一个代理用户
+			 * 后续的订单由用户申请或系统自动结算给，代理用户直接会将佣金结算给自己
+			 */
+			boolean result = accountService.settlementPreviousAgency(userId);
+			if (!result) {
+				logger.warn("用户管理->会员管理->代理审批 存在异常：{}","当前用户订单佣金交割给代理用户时出错！");
+			}
+			
 			userService.approveAgency(userId,settlementRate,shareUrl);
+			
 		}catch (Exception e) {
 			logger.error("用户管理->会员管理->代理审批 出错：{}",e.getMessage());
 			e.printStackTrace();

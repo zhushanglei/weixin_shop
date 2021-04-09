@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.qiguliuxing.dts.admin.annotation.RequiresPermissionsDesc;
+import com.qiguliuxing.dts.admin.util.AuthSupport;
 import com.qiguliuxing.dts.admin.util.StatVo;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.db.service.StatService;
@@ -32,7 +33,7 @@ public class AdminStatController {
 	@RequiresPermissionsDesc(menu = { "统计管理", "用户统计" }, button = "查询")
 	@GetMapping("/user")
 	public Object statUser() {
-		logger.info("【请求开始】统计管理->用户统计->查询");
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 统计管理->用户统计->查询");
 
 		List<Map> rows = statService.statUser();
 		String[] columns = new String[] { "day", "users" };
@@ -48,7 +49,7 @@ public class AdminStatController {
 	@RequiresPermissionsDesc(menu = { "统计管理", "订单统计" }, button = "查询")
 	@GetMapping("/order")
 	public Object statOrder() {
-		logger.info("【请求开始】统计管理->订单统计->查询");
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 统计管理->订单统计->查询");
 
 		List<Map> rows = statService.statOrder();
 		String[] columns = new String[] { "day", "orders", "customers", "amount", "pcr" };
@@ -64,7 +65,7 @@ public class AdminStatController {
 	@RequiresPermissionsDesc(menu = { "统计管理", "商品统计" }, button = "查询")
 	@GetMapping("/goods")
 	public Object statGoods() {
-		logger.info("【请求开始】统计管理->商品统计->查询");
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 统计管理->商品统计->查询");
 
 		List<Map> rows = statService.statGoods();
 		String[] columns = new String[] { "day", "orders", "products", "amount" };

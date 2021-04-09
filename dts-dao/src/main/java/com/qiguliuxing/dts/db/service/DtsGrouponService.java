@@ -3,6 +3,7 @@ package com.qiguliuxing.dts.db.service;
 import com.alibaba.druid.util.StringUtils;
 import com.github.pagehelper.PageHelper;
 import com.qiguliuxing.dts.db.dao.DtsGrouponMapper;
+import com.qiguliuxing.dts.db.dao.ex.GrouponMapperEx;
 import com.qiguliuxing.dts.db.domain.DtsGroupon;
 import com.qiguliuxing.dts.db.domain.DtsGrouponExample;
 
@@ -16,6 +17,8 @@ import java.util.List;
 public class DtsGrouponService {
 	@Resource
 	private DtsGrouponMapper mapper;
+	@Resource
+	private GrouponMapperEx grouponMapperEx;
 
 	/**
 	 * 获取用户发起的团购记录
@@ -133,5 +136,36 @@ public class DtsGrouponService {
 
 		PageHelper.startPage(page, size);
 		return mapper.selectByExample(example);
+	}
+
+	/**
+	 * 根据品牌入驻店铺获取对应的团购数据
+	 * @param brandIds
+	 * @param rulesId
+	 * @param page
+	 * @param limit
+	 * @param sort
+	 * @param order
+	 * @return
+	 */
+	public List<DtsGroupon> queryBrandGroupons(List<Integer> brandIds, String rulesId, Integer page, Integer size,
+			String sort, String order) {
+		String orderBySql = null;
+		if (!StringUtils.isEmpty(sort) && !StringUtils.isEmpty(order)) {
+			orderBySql = "o."+sort + " " + order;
+		}
+		
+		String brandIdsSql = null;
+		if (brandIds != null) {
+			brandIdsSql = "";
+			for (Integer brandId : brandIds) {
+				brandIdsSql += "," + brandId;
+			}
+			brandIdsSql = " and g.brand_id in (" + brandIdsSql.substring(1) + ") ";
+		}
+		
+		PageHelper.startPage(page, size);
+		
+		return grouponMapperEx.queryBrandGroupons(rulesId,orderBySql,brandIdsSql);
 	}
 }

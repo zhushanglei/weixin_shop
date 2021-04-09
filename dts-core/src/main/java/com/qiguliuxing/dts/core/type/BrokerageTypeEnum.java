@@ -9,7 +9,7 @@ package com.qiguliuxing.dts.core.type;
  */
 public enum BrokerageTypeEnum {
 
-	SYS_APPLY((byte) 0, "系统结算自动申请"), USER_APPLY((byte) 1, "用户手工申请"), APPLY_FINISH((byte) 2, "审批通过或完成"), APPLY_FAIL((byte) 2, "审批不通过");
+	SYS_APPLY((byte) 0, "系统结算自动申请"), USER_APPLY((byte) 1, "用户手工申请");
 
 	private Byte type;
 	private String desc;

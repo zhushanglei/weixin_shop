@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.admin.dao.GoodsAllinone;
 import com.qiguliuxing.dts.admin.util.AdminResponseUtil;
+import com.qiguliuxing.dts.admin.util.AuthSupport;
 import com.qiguliuxing.dts.admin.util.CatVo;
 import com.qiguliuxing.dts.core.qcode.QCodeService;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
@@ -61,9 +62,12 @@ public class AdminGoodsService {
 
 	@Autowired
 	private QCodeService qCodeService;
+	
+	@Autowired
+	private AdminDataAuthService adminDataAuthService;
 
-	public Object list(String goodsSn, String name, Integer page, Integer limit, String sort, String order) {
-		List<DtsGoods> goodsList = goodsService.querySelective(goodsSn, name, page, limit, sort, order);
+	public Object list(String goodsSn, String name, Integer page, Integer limit, String sort, String order, List<Integer> brandIds) {
+		List<DtsGoods> goodsList = goodsService.querySelective(goodsSn, name, page, limit, sort, order, brandIds);
 		long total = PageInfo.of(goodsList).getTotal();
 		Map<String, Object> data = new HashMap<>();
 		data.put("total", total);
@@ -174,7 +178,7 @@ public class AdminGoodsService {
 		}
 
 		// 将生成的分享图片地址写入数据库
-		String url = qCodeService.createGoodShareImage(goods.getId().toString(), goods.getPicUrl(), goods.getName(),goods.getCounterPrice(),goods.getRetailPrice());
+		String url = qCodeService.createGoodShareImage(null,goods.getId().toString(), goods.getPicUrl(), goods.getName(),goods.getCounterPrice(),goods.getRetailPrice());
 		goods.setShareUrl(url);
 
 		// 商品基本信息表Dts_goods
@@ -250,7 +254,7 @@ public class AdminGoodsService {
 		goodsService.add(goods);
 
 		// 将生成的分享图片地址写入数据库
-		String url = qCodeService.createGoodShareImage(goods.getId().toString(), goods.getPicUrl(), goods.getName(),goods.getCounterPrice(),goods.getRetailPrice());
+		String url = qCodeService.createGoodShareImage(null,goods.getId().toString(), goods.getPicUrl(), goods.getName(),goods.getCounterPrice(),goods.getRetailPrice());
 		if (!StringUtils.isEmpty(url)) {
 			goods.setShareUrl(url);
 			if (goodsService.updateById(goods) == 0) {
@@ -304,8 +308,19 @@ public class AdminGoodsService {
 
 			categoryList.add(l1CatVo);
 		}
-		List<DtsBrand> list = brandService.all();
-		List<Map<String, Object>> brandList = new ArrayList<>(list.size());
+		
+		//品牌商获取需要控制数据权限，如果是店铺管理员下拉的品牌商只能选择当前用户可管理的品牌商
+		List<DtsBrand> list = new ArrayList<>();
+		List<Map<String, Object>> brandList = new ArrayList<>();
+		List<Integer> brandIds = null;
+		if (adminDataAuthService.isBrandManager()) {
+			list = brandService.getAdminBrands(AuthSupport.adminId());
+			logger.info("运营商管理角色操作，需控制数据权限，brandIds:{}", JSONObject.toJSONString(brandIds));
+		} else {
+			list = brandService.all();
+			brandList = new ArrayList<>(list.size());
+		}
+		
 		for (DtsBrand brand : list) {
 			Map<String, Object> b = new HashMap<>(2);
 			b.put("value", brand.getId());

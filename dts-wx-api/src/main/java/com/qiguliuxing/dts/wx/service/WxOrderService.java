@@ -478,7 +478,7 @@ public class WxOrderService {
 		if (user != null && user.getShareUserId() != null) {
 			shareUserId = user.getShareUserId();
 		}
-		Integer settlementRate = 3;// 默认百分之3
+		Integer settlementRate = 5;// 默认百分之5
 		DtsUserAccount userAccount = accountService.findShareUserAccountByUserId(shareUserId);
 		if (userAccount != null && userAccount.getSettlementRate() > 0 && userAccount.getSettlementRate() < 15) {
 			settlementRate = userAccount.getSettlementRate();
@@ -1343,7 +1343,7 @@ public class WxOrderService {
 		result.put("accountTraceList", accountTraceList);
 		result.put("totalPages", totalPages);
 
-		logger.info("【请求结束】获取推广订单列表成功！,推广订单数：{}", count);
+		logger.info("【请求结束】获取佣金提现列表成功！,提现总数：{}", count);
 		return ResponseUtil.ok(result);
 	}
 

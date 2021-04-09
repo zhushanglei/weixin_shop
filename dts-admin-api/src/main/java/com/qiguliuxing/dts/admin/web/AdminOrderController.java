@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.qiguliuxing.dts.admin.annotation.RequiresPermissionsDesc;
 import com.qiguliuxing.dts.admin.service.AdminOrderService;
+import com.qiguliuxing.dts.admin.util.AuthSupport;
 import com.qiguliuxing.dts.core.validator.Order;
 import com.qiguliuxing.dts.core.validator.Sort;
 
@@ -49,7 +50,7 @@ public class AdminOrderController {
 			@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer limit,
 			@Sort @RequestParam(defaultValue = "add_time") String sort,
 			@Order @RequestParam(defaultValue = "desc") String order) {
-		logger.info("【请求开始】商场管理->订单管理->查询,请求参数:userId:{},orderSn:{},page:{}", userId, orderSn, page);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->订单管理->查询,请求参数:userId:{},orderSn:{},page:{}", userId, orderSn, page);
 
 		return adminOrderService.list(userId, orderSn, orderStatusArray, page, limit, sort, order);
 	}
@@ -64,7 +65,7 @@ public class AdminOrderController {
 	@RequiresPermissionsDesc(menu = { "商场管理", "订单管理" }, button = "详情")
 	@GetMapping("/detail")
 	public Object detail(@NotNull Integer id) {
-		logger.info("【请求开始】商场管理->订单管理->详情,请求参数:id:{}", id);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->订单管理->详情,请求参数:id:{}", id);
 
 		return adminOrderService.detail(id);
 	}
@@ -79,7 +80,7 @@ public class AdminOrderController {
 	@RequiresPermissionsDesc(menu = { "商场管理", "订单管理" }, button = "订单退款")
 	@PostMapping("/refund")
 	public Object refund(@RequestBody String body) {
-		logger.info("【请求开始】商场管理->订单管理->订单退款,请求参数,body:{}", body);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->订单管理->订单退款,请求参数,body:{}", body);
 
 		return adminOrderService.refund(body);
 	}
@@ -94,7 +95,7 @@ public class AdminOrderController {
 	@RequiresPermissionsDesc(menu = { "商场管理", "订单管理" }, button = "订单发货")
 	@PostMapping("/ship")
 	public Object ship(@RequestBody String body) {
-		logger.info("【请求开始】商场管理->订单管理->订单发货,请求参数,body:{}", body);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->订单管理->订单发货,请求参数,body:{}", body);
 
 		return adminOrderService.ship(body);
 	}
@@ -109,7 +110,7 @@ public class AdminOrderController {
 	@RequiresPermissionsDesc(menu = { "商场管理", "订单管理" }, button = "订单商品回复")
 	@PostMapping("/reply")
 	public Object reply(@RequestBody String body) {
-		logger.info("【请求开始】商场管理->订单管理->订单商品回复,请求参数,body:{}", body);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->订单管理->订单商品回复,请求参数,body:{}", body);
 
 		return adminOrderService.reply(body);
 	}
@@ -120,11 +121,11 @@ public class AdminOrderController {
 	 * @param body 订单信息，{ orderId：xxx }
 	 * @return 订单操作结果
 	 */
-	@RequiresPermissions("admin:order:listShipChannel")
-	@RequiresPermissionsDesc(menu = { "商场管理", "订单管理" }, button = "快递信息加载")
+	@RequiresPermissions("admin:order:listShip")
+	@RequiresPermissionsDesc(menu = { "商场管理", "订单管理" }, button = "快递加载")
 	@GetMapping("/listShipChannel")
 	public Object listShipChannel() {
-		logger.info("【请求开始】商场管理->订单管理->快递信息加载");
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->订单管理->快递信息加载");
 
 		return adminOrderService.listShipChannel();
 	}

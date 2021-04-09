@@ -9,12 +9,12 @@ spring:
       max-request-size: 80Mb
       location: /tmp/tomcat_upload
 
-      
+
 server:
   port: 8083
   servlet:
     context-path: /demo
-    
+
 logging:
   level:
     root:  ERROR

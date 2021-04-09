@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.qiguliuxing.dts.admin.util.AdminResponseUtil;
+import com.qiguliuxing.dts.admin.util.AuthSupport;
 import com.qiguliuxing.dts.core.util.JacksonUtil;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.core.util.bcrypt.BCryptPasswordEncoder;
@@ -34,7 +35,7 @@ public class AdminProfileController {
 	@RequiresAuthentication
 	@PostMapping("/password")
 	public Object create(@RequestBody String body) {
-		logger.info("【请求开始】系统管理->修改密码,请求参数,body:{}", body);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 系统管理->修改密码,请求参数,body:{}", body);
 
 		String oldPassword = JacksonUtil.parseString(body, "oldPassword");
 		String newPassword = JacksonUtil.parseString(body, "newPassword");

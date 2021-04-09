@@ -1,16 +1,5 @@
 package com.qiguliuxing.dts.db.service;
 
-import com.github.pagehelper.PageHelper;
-import com.qiguliuxing.dts.db.dao.DtsOrderMapper;
-import com.qiguliuxing.dts.db.dao.ex.OrderMapper;
-import com.qiguliuxing.dts.db.domain.DtsOrder;
-import com.qiguliuxing.dts.db.domain.DtsOrderExample;
-import com.qiguliuxing.dts.db.util.OrderUtil;
-
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
-import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -19,12 +8,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import com.github.pagehelper.PageHelper;
+import com.qiguliuxing.dts.db.bean.CategorySellAmts;
+import com.qiguliuxing.dts.db.bean.DayStatis;
+import com.qiguliuxing.dts.db.dao.DtsOrderMapper;
+import com.qiguliuxing.dts.db.dao.ex.OrderMapper;
+import com.qiguliuxing.dts.db.dao.ex.StatMapper;
+import com.qiguliuxing.dts.db.domain.DtsOrder;
+import com.qiguliuxing.dts.db.domain.DtsOrderExample;
+import com.qiguliuxing.dts.db.util.OrderUtil;
+
 @Service
 public class DtsOrderService {
 	@Resource
 	private DtsOrderMapper dtsOrderMapper;
 	@Resource
 	private OrderMapper orderMapper;
+	@Resource
+	private StatMapper statMapper;
+	
 
 	public int add(DtsOrder order) {
 		order.setAddTime(LocalDateTime.now());
@@ -171,13 +178,62 @@ public class DtsOrderService {
 		orderInfo.put("unrecv", unrecv);
 		orderInfo.put("uncomment", uncomment);
 		return orderInfo;
-
 	}
 
 	public List<DtsOrder> queryComment() {
 		DtsOrderExample example = new DtsOrderExample();
 		example.or().andCommentsGreaterThan((short) 0).andDeletedEqualTo(false);
 		return dtsOrderMapper.selectByExample(example);
+	}
+
+	public List<DayStatis> recentCount(int statisDaysRang) {
+		return statMapper.statisIncreaseOrderCnt(statisDaysRang);
+	}
+
+	public List<CategorySellAmts> categorySell() {
+		return statMapper.categorySellStatis();
+	}
+
+	/**
+	 * 获取指定店铺的订单
+	 * @param brandIds
+	 * @param userId
+	 * @param orderSn
+	 * @param orderStatusArray
+	 * @param page
+	 * @param limit
+	 * @param sort
+	 * @param order
+	 * @return
+	 */
+	public List<DtsOrder> queryBrandSelective(List<Integer> brandIds, Integer userId, String orderSn,
+			List<Short> orderStatusArray, Integer page, Integer size, String sort, String order) {
+		
+		String orderStatusSql = null;
+		if (orderStatusArray != null) {
+			orderStatusSql = "";
+			for (Short orderStatus : orderStatusArray) {
+				orderStatusSql += "," + orderStatus;
+			}
+			orderStatusSql = "and o.order_status in (" + orderStatusSql.substring(1) + ") ";
+		}
+		
+		String orderBySql = null;
+		if (!StringUtils.isEmpty(sort) && !StringUtils.isEmpty(order)) {
+			orderBySql = "o."+sort + " " + order;
+		}
+		
+		String brandIdsSql = null;
+		if (brandIds != null) {
+			brandIdsSql = "";
+			for (Integer brandId : brandIds) {
+				brandIdsSql += "," + brandId;
+			}
+			brandIdsSql = " and g.brand_id in (" + brandIdsSql.substring(1) + ") ";
+		}
+
+		PageHelper.startPage(page, size);
+		return orderMapper.selectBrandOrdersByExample(userId, orderSn,orderStatusSql,orderBySql,brandIdsSql);
 	}
 
 }

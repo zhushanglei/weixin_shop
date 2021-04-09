@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.admin.annotation.RequiresPermissionsDesc;
+import com.qiguliuxing.dts.admin.util.AuthSupport;
 import com.qiguliuxing.dts.core.storage.StorageService;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.core.validator.Order;
@@ -49,7 +50,7 @@ public class AdminStorageController {
 			@RequestParam(defaultValue = "10") Integer limit,
 			@Sort @RequestParam(defaultValue = "add_time") String sort,
 			@Order @RequestParam(defaultValue = "desc") String order) {
-		logger.info("【请求开始】系统管理->对象存储->查询,请求参数,name:{},key:{},page:{}", name, key, page);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 系统管理->对象存储->查询,请求参数,name:{},key:{},page:{}", name, key, page);
 
 		List<DtsStorage> storageList = DtsStorageService.querySelective(key, name, page, limit, sort, order);
 		long total = PageInfo.of(storageList).getTotal();
@@ -65,7 +66,7 @@ public class AdminStorageController {
 	@RequiresPermissionsDesc(menu = { "系统管理", "对象存储" }, button = "上传")
 	@PostMapping("/create")
 	public Object create(@RequestParam("file") MultipartFile file) throws IOException {
-		logger.info("【请求开始】系统管理->对象存储->上传,请求参数,file:{}", file.getOriginalFilename());
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 系统管理->对象存储->上传,请求参数,file:{}", file.getOriginalFilename());
 
 		String originalFilename = file.getOriginalFilename();
 		String url = storageService.store(file.getInputStream(), file.getSize(), file.getContentType(),
@@ -81,7 +82,7 @@ public class AdminStorageController {
 	@RequiresPermissionsDesc(menu = { "系统管理", "对象存储" }, button = "详情")
 	@PostMapping("/read")
 	public Object read(@NotNull Integer id) {
-		logger.info("【请求开始】系统管理->对象存储->详情,请求参数,id:{}", id);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 系统管理->对象存储->详情,请求参数,id:{}", id);
 
 		DtsStorage storageInfo = DtsStorageService.findById(id);
 		if (storageInfo == null) {
@@ -96,7 +97,7 @@ public class AdminStorageController {
 	@RequiresPermissionsDesc(menu = { "系统管理", "对象存储" }, button = "编辑")
 	@PostMapping("/update")
 	public Object update(@RequestBody DtsStorage dtsStorage) {
-		logger.info("【请求开始】系统管理->对象存储->编辑,请求参数:{}", JSONObject.toJSONString(dtsStorage));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 系统管理->对象存储->编辑,请求参数:{}", JSONObject.toJSONString(dtsStorage));
 
 		if (DtsStorageService.update(dtsStorage) == 0) {
 			logger.error("系统管理->对象存储->编辑 错误:{}", "更新数据失败!");
@@ -111,7 +112,7 @@ public class AdminStorageController {
 	@RequiresPermissionsDesc(menu = { "系统管理", "对象存储" }, button = "删除")
 	@PostMapping("/delete")
 	public Object delete(@RequestBody DtsStorage DtsStorage) {
-		logger.info("【请求开始】系统管理->对象存储->删除,请求参数:{}", JSONObject.toJSONString(DtsStorage));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 系统管理->对象存储->删除,请求参数:{}", JSONObject.toJSONString(DtsStorage));
 
 		String key = DtsStorage.getKey();
 		if (StringUtils.isEmpty(key)) {

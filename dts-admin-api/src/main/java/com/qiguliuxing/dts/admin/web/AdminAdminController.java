@@ -27,6 +27,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.admin.annotation.RequiresPermissionsDesc;
 import com.qiguliuxing.dts.admin.util.AdminResponseUtil;
+import com.qiguliuxing.dts.admin.util.AuthSupport;
 import com.qiguliuxing.dts.core.util.RegexUtil;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.core.util.bcrypt.BCryptPasswordEncoder;
@@ -51,7 +52,7 @@ public class AdminAdminController {
 			@RequestParam(defaultValue = "10") Integer limit,
 			@Sort @RequestParam(defaultValue = "add_time") String sort,
 			@Order @RequestParam(defaultValue = "desc") String order) {
-		logger.info("【请求开始】系统管理->管理员管理->查询,请求参数:username:{},page:{}", username, page);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 系统管理->管理员管理->查询,请求参数:username:{},page:{}", username, page);
 
 		List<DtsAdmin> adminList = adminService.querySelective(username, page, limit, sort, order);
 		long total = PageInfo.of(adminList).getTotal();
@@ -84,7 +85,7 @@ public class AdminAdminController {
 	@RequiresPermissionsDesc(menu = { "系统管理", "管理员管理" }, button = "添加")
 	@PostMapping("/create")
 	public Object create(@RequestBody DtsAdmin admin) {
-		logger.info("【请求开始】系统管理->管理员管理->添加,请求参数:{}", JSONObject.toJSONString(admin));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 系统管理->管理员管理->添加,请求参数:{}", JSONObject.toJSONString(admin));
 
 		Object error = validate(admin);
 		if (error != null) {
@@ -112,7 +113,7 @@ public class AdminAdminController {
 	@RequiresPermissionsDesc(menu = { "系统管理", "管理员管理" }, button = "详情")
 	@GetMapping("/read")
 	public Object read(@NotNull Integer id) {
-		logger.info("【请求开始】系统管理->管理员管理->详情,请求参数,id:{}", id);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 系统管理->管理员管理->详情,请求参数,id:{}", id);
 
 		DtsAdmin admin = adminService.findById(id);
 
@@ -124,7 +125,7 @@ public class AdminAdminController {
 	@RequiresPermissionsDesc(menu = { "系统管理", "管理员管理" }, button = "编辑")
 	@PostMapping("/update")
 	public Object update(@RequestBody DtsAdmin admin) {
-		logger.info("【请求开始】系统管理->管理员管理->编辑,请求参数:{}", JSONObject.toJSONString(admin));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 系统管理->管理员管理->编辑,请求参数:{}", JSONObject.toJSONString(admin));
 
 		Object error = validate(admin);
 		if (error != null) {
@@ -154,7 +155,7 @@ public class AdminAdminController {
 	@RequiresPermissionsDesc(menu = { "系统管理", "管理员管理" }, button = "删除")
 	@PostMapping("/delete")
 	public Object delete(@RequestBody DtsAdmin admin) {
-		logger.info("【请求开始】系统管理->管理员管理->删除,请求参数:{}", JSONObject.toJSONString(admin));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 系统管理->管理员管理->删除,请求参数:{}", JSONObject.toJSONString(admin));
 
 		Integer anotherAdminId = admin.getId();
 		if (anotherAdminId == null) {

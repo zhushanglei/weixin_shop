@@ -10,7 +10,7 @@ import com.qiguliuxing.dts.core.consts.CommConsts;
  * 简单缓存的数据
  */
 public class HomeCacheManager {
-	public static final boolean ENABLE = true;// 默认启动缓存
+	public static final boolean ENABLE = true;// 默认启动缓存true,不启动false
 
 	public static final String INDEX = "index";
 	public static final String CATALOG = "catalog";

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.admin.annotation.RequiresPermissionsDesc;
+import com.qiguliuxing.dts.admin.util.AuthSupport;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.core.validator.Order;
 import com.qiguliuxing.dts.core.validator.Sort;
@@ -45,7 +46,7 @@ public class AdminCategoryController {
 			@RequestParam(defaultValue = "10") Integer limit,
 			@Sort @RequestParam(defaultValue = "add_time") String sort,
 			@Order @RequestParam(defaultValue = "desc") String order) {
-		logger.info("【请求开始】商场管理->类目管理->查询,请求参数:name:{},page:{}", name, page);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->类目管理->查询,请求参数:name:{},page:{}", name, page);
 
 		List<DtsCategory> collectList = categoryService.querySelective(id, name, page, limit, sort, order);
 		long total = PageInfo.of(collectList).getTotal();
@@ -83,7 +84,7 @@ public class AdminCategoryController {
 	@RequiresPermissionsDesc(menu = { "商场管理", "类目管理" }, button = "添加")
 	@PostMapping("/create")
 	public Object create(@RequestBody DtsCategory category) {
-		logger.info("【请求开始】商场管理->类目管理->添加,请求参数:{}", JSONObject.toJSONString(category));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->类目管理->添加,请求参数:{}", JSONObject.toJSONString(category));
 
 		Object error = validate(category);
 		if (error != null) {
@@ -99,7 +100,7 @@ public class AdminCategoryController {
 	@RequiresPermissionsDesc(menu = { "商场管理", "类目管理" }, button = "详情")
 	@GetMapping("/read")
 	public Object read(@NotNull Integer id) {
-		logger.info("【请求开始】商场管理->类目管理->详情,请求参数,id:{}", id);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->类目管理->详情,请求参数,id:{}", id);
 
 		DtsCategory category = categoryService.findById(id);
 
@@ -111,7 +112,7 @@ public class AdminCategoryController {
 	@RequiresPermissionsDesc(menu = { "商场管理", "类目管理" }, button = "编辑")
 	@PostMapping("/update")
 	public Object update(@RequestBody DtsCategory category) {
-		logger.info("【请求开始】商场管理->类目管理->编辑,请求参数:{}", JSONObject.toJSONString(category));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->类目管理->编辑,请求参数:{}", JSONObject.toJSONString(category));
 
 		Object error = validate(category);
 		if (error != null) {
@@ -131,7 +132,7 @@ public class AdminCategoryController {
 	@RequiresPermissionsDesc(menu = { "商场管理", "类目管理" }, button = "删除")
 	@PostMapping("/delete")
 	public Object delete(@RequestBody DtsCategory category) {
-		logger.info("【请求开始】商场管理->类目管理->删除,请求参数:{}", JSONObject.toJSONString(category));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->类目管理->删除,请求参数:{}", JSONObject.toJSONString(category));
 
 		Integer id = category.getId();
 		if (id == null) {
@@ -146,7 +147,7 @@ public class AdminCategoryController {
 	@RequiresPermissions("admin:category:list")
 	@GetMapping("/l1")
 	public Object catL1() {
-		logger.info("【请求开始】商场管理->类目管理->一级分类目录查询");
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->类目管理->一级分类目录查询");
 
 		// 所有一级分类目录
 		List<DtsCategory> l1CatList = categoryService.queryL1();

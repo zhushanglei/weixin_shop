@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.admin.annotation.RequiresPermissionsDesc;
+import com.qiguliuxing.dts.admin.util.AuthSupport;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.core.validator.Order;
 import com.qiguliuxing.dts.core.validator.Sort;
@@ -37,7 +38,7 @@ public class AdminHistoryController {
 			@RequestParam(defaultValue = "10") Integer limit,
 			@Sort @RequestParam(defaultValue = "add_time") String sort,
 			@Order @RequestParam(defaultValue = "desc") String order) {
-		logger.info("【请求开始】用户管理->搜索历史->查询,请求参数:userId:{},keyword:{},page:{}", userId, keyword, page);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 用户管理->搜索历史->查询,请求参数:userId:{},keyword:{},page:{}", userId, keyword, page);
 
 		List<DtsSearchHistory> footprintList = searchHistoryService.querySelective(userId, keyword, page, limit, sort,
 				order);

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.admin.annotation.RequiresPermissionsDesc;
+import com.qiguliuxing.dts.admin.util.AuthSupport;
 import com.qiguliuxing.dts.core.qcode.QCodeService;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.core.validator.Order;
@@ -49,7 +50,7 @@ public class AdminTopicController {
 			@RequestParam(defaultValue = "10") Integer limit,
 			@Sort @RequestParam(defaultValue = "add_time") String sort,
 			@Order @RequestParam(defaultValue = "desc") String order) {
-		logger.info("【请求开始】推广管理->专题管理->查询,请求参数,title:{},subtitle:{},page:{}", title, subtitle, page);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 推广管理->专题管理->查询,请求参数,title:{},subtitle:{},page:{}", title, subtitle, page);
 
 		List<DtsTopic> topicList = topicService.querySelective(title, subtitle, page, limit, sort, order);
 		long total = PageInfo.of(topicList).getTotal();
@@ -81,7 +82,7 @@ public class AdminTopicController {
 	@RequiresPermissionsDesc(menu = { "推广管理", "专题管理" }, button = "添加")
 	@PostMapping("/create")
 	public Object create(@RequestBody DtsTopic topic) {
-		logger.info("【请求开始】推广管理->专题管理->添加,请求参数:{}", JSONObject.toJSONString(topic));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 推广管理->专题管理->添加,请求参数:{}", JSONObject.toJSONString(topic));
 
 		Object error = validate(topic);
 		if (error != null) {
@@ -106,7 +107,7 @@ public class AdminTopicController {
 	@RequiresPermissionsDesc(menu = { "推广管理", "专题管理" }, button = "详情")
 	@GetMapping("/read")
 	public Object read(@NotNull Integer id) {
-		logger.info("【请求开始】推广管理->专题管理->详情,请求参数,id:{}", id);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 推广管理->专题管理->详情,请求参数,id:{}", id);
 
 		DtsTopic topic = topicService.findById(id);
 
@@ -118,7 +119,7 @@ public class AdminTopicController {
 	@RequiresPermissionsDesc(menu = { "推广管理", "专题管理" }, button = "编辑")
 	@PostMapping("/update")
 	public Object update(@RequestBody DtsTopic topic) {
-		logger.info("【请求开始】推广管理->专题管理->编辑,请求参数:{}", JSONObject.toJSONString(topic));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 推广管理->专题管理->编辑,请求参数:{}", JSONObject.toJSONString(topic));
 
 		Object error = validate(topic);
 		if (error != null) {
@@ -146,7 +147,7 @@ public class AdminTopicController {
 	@RequiresPermissionsDesc(menu = { "推广管理", "专题管理" }, button = "删除")
 	@PostMapping("/delete")
 	public Object delete(@RequestBody DtsTopic topic) {
-		logger.info("【请求开始】推广管理->专题管理->删除,请求参数:{}", JSONObject.toJSONString(topic));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 推广管理->专题管理->删除,请求参数:{}", JSONObject.toJSONString(topic));
 
 		topicService.deleteById(topic.getId());
 

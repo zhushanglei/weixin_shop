@@ -1,11 +1,15 @@
 package com.qiguliuxing.dts.admin.web;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -31,8 +35,12 @@ import com.qiguliuxing.dts.admin.util.AdminResponseCode;
 import com.qiguliuxing.dts.admin.util.AdminResponseUtil;
 import com.qiguliuxing.dts.admin.util.Permission;
 import com.qiguliuxing.dts.admin.util.PermissionUtil;
+import com.qiguliuxing.dts.admin.util.VerifyCodeUtils;
+import com.qiguliuxing.dts.core.captcha.CaptchaCodeManager;
+import com.qiguliuxing.dts.core.util.Base64;
 import com.qiguliuxing.dts.core.util.JacksonUtil;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
+import com.qiguliuxing.dts.core.util.UUID;
 import com.qiguliuxing.dts.db.domain.DtsAdmin;
 import com.qiguliuxing.dts.db.service.DtsPermissionService;
 import com.qiguliuxing.dts.db.service.DtsRoleService;
@@ -57,11 +65,23 @@ public class AdminAuthController {
 
 		String username = JacksonUtil.parseString(body, "username");
 		String password = JacksonUtil.parseString(body, "password");
+		String code = JacksonUtil.parseString(body, "code");
+		String uuid = JacksonUtil.parseString(body, "uuid");
 
-		if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
+		if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password) || StringUtils.isEmpty(code) || StringUtils.isEmpty(uuid)) {
 			return ResponseUtil.badArgument();
 		}
 
+		//验证码校验
+		String cachedCaptcha = CaptchaCodeManager.getCachedCaptcha(uuid);
+		if (cachedCaptcha == null) {
+			logger.error("系统管理->用户登录  错误:{},", AdminResponseCode.AUTH_CAPTCHA_EXPIRED.desc());
+			return AdminResponseUtil.fail(AdminResponseCode.AUTH_CAPTCHA_EXPIRED);
+		}
+		if (!code.equalsIgnoreCase(cachedCaptcha)) {
+			logger.error("系统管理->用户登录  错误:{},输入验证码：{},后台验证码：{}", AdminResponseCode.AUTH_CAPTCHA_ERROR.desc(),code,cachedCaptcha);
+			return AdminResponseUtil.fail(AdminResponseCode.AUTH_CAPTCHA_ERROR);
+		}
 		Subject currentUser = SecurityUtils.getSubject();
 		try {
 			currentUser.login(new UsernamePasswordToken(username, password));
@@ -82,7 +102,7 @@ public class AdminAuthController {
 	}
 
 	/*
-	 *
+	 * 用户注销
 	 */
 	@RequiresAuthentication
 	@PostMapping("/logout")
@@ -142,11 +162,41 @@ public class AdminAuthController {
 				apis.add("*");
 				return apis;
 				// return systemPermissionsMap.values();
-
 			}
 		}
 		return apis;
 	}
+	
+	/**
+     * 生成验证码
+     */
+    @GetMapping("/captchaImage")
+    public Object getCode(HttpServletResponse response) throws IOException {
+        // 生成随机字串
+        String verifyCode = VerifyCodeUtils.generateVerifyCode(4);
+        // 唯一标识
+        String uuid = UUID.randomUUID().toString(true);
+        boolean successful = CaptchaCodeManager.addToCache(uuid, verifyCode,10);//存储内存
+        if (!successful) {
+			logger.error("请求验证码出错:{}", AdminResponseCode.AUTH_CAPTCHA_FREQUENCY.desc());
+			return AdminResponseUtil.fail(AdminResponseCode.AUTH_CAPTCHA_FREQUENCY);
+		}
+        // 生成图片
+        int w = 111, h = 36;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        VerifyCodeUtils.outputImage(w, h, stream, verifyCode);
+        try {
+        	Map<String, Object> data = new HashMap<>();
+            data.put("uuid", uuid);
+            data.put("img", Base64.encode(stream.toByteArray()));
+            return ResponseUtil.ok(data);
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseUtil.serious();
+        } finally {
+            stream.close();
+        }
+    }
 
 	@GetMapping("/401")
 	public Object page401() {

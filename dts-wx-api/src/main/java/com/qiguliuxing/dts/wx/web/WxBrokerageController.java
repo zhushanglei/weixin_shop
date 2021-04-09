@@ -1,10 +1,9 @@
 package com.qiguliuxing.dts.wx.web;
 
-import static com.qiguliuxing.dts.wx.util.WxResponseCode.AUTH_CAPTCHA_UNMATCH;
-import static com.qiguliuxing.dts.wx.util.WxResponseCode.APPLY_WITHDRAWAL_FAIL;
-
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,7 +31,6 @@ import com.qiguliuxing.dts.db.domain.DtsAccountTrace;
 import com.qiguliuxing.dts.db.domain.DtsUserAccount;
 import com.qiguliuxing.dts.db.service.DtsAccountService;
 import com.qiguliuxing.dts.wx.annotation.LoginUser;
-import com.qiguliuxing.dts.wx.service.CaptchaCodeManager;
 import com.qiguliuxing.dts.wx.service.WxOrderService;
 import com.qiguliuxing.dts.wx.util.WxResponseCode;
 import com.qiguliuxing.dts.wx.util.WxResponseUtil;
@@ -71,7 +70,6 @@ public class WxBrokerageController {
 			logger.error("获取结算信息数据失败:用户未登录！！！");
 			return ResponseUtil.unlogin();
 		}
-
 		Map<Object, Object> data = new HashMap<Object, Object>();
 
 		// 查询用户账号
@@ -82,8 +80,11 @@ public class WxBrokerageController {
 			totalAmount = userAccount.getTotalAmount();
 			remainAmount = userAccount.getRemainAmount();
 		}
+		
+		//可提现金额 = 已结算未提现 remainAmount + 未结算 unSettleAmount
+		BigDecimal unSettleAmount = accountService.getUnSettleAmount(userId);
 		data.put("totalAmount", totalAmount);
-		data.put("remainAmount", remainAmount);
+		data.put("remainAmount", remainAmount.add(unSettleAmount));
 
 		// 统计数据信息 本月和上月的结算
 		String lastMonthEndTime = DateTimeUtil.getPrevMonthEndDay() + " 23:59:59";
@@ -147,54 +148,45 @@ public class WxBrokerageController {
 	 * @param size
 	 * @return
 	 */
-	@GetMapping("applyWithdrawal")
+	@PostMapping("applyWithdrawal")
 	public Object applyWithdrawal(@LoginUser Integer userId, @RequestBody String body) {
-		logger.info("【请求开始】提现申请,请求参数,userId:{}", body);
-
+		logger.info("【请求开始】提现申请,请求参数,body:{}", body);
 		if (userId == null) {
 			logger.error("提现申请失败:用户未登录！！！");
 			return ResponseUtil.unlogin();
 		}
+		
 		String mobile = JacksonUtil.parseString(body, "mobile");
-		String code = JacksonUtil.parseString(body, "code");
+		//String code = JacksonUtil.parseString(body, "code");
 		String amt = JacksonUtil.parseString(body, "amt");
 
-		if (StringUtils.isEmpty(amt) || StringUtils.isEmpty(mobile) || StringUtils.isEmpty(code)) {
+		if (StringUtils.isEmpty(amt) || StringUtils.isEmpty(mobile)) {
 			logger.error("提现申请失败:{}", CommConsts.MISS_PARAMS);
 			return ResponseUtil.badArgument();
 		}
 
 		// 判断验证码是否正确
-		String cacheCode = CaptchaCodeManager.getCachedCaptcha(mobile);
+		/*String cacheCode = CaptchaCodeManager.getCachedCaptcha(mobile);
 		if (cacheCode == null || cacheCode.isEmpty() || !cacheCode.equals(code)) {
 			logger.error("提现申请失败:{}", AUTH_CAPTCHA_UNMATCH.desc());
 			return WxResponseUtil.fail(AUTH_CAPTCHA_UNMATCH);
-		}
-
-		// 判断用户可提现金额正确性
-		DtsUserAccount userAccount = accountService.findShareUserAccountByUserId(userId);
-		BigDecimal remainAmount = new BigDecimal(0.00);
-		BigDecimal applyAmt = new BigDecimal(amt);
-		if (userAccount != null) {
-			remainAmount = userAccount.getRemainAmount();
-		}
-		if (remainAmount.compareTo(applyAmt) == -1) {
-			logger.error("提现申请失败:{}", APPLY_WITHDRAWAL_FAIL.desc());
-			return WxResponseUtil.fail(APPLY_WITHDRAWAL_FAIL);
-		}
+		}*/
+		
 		//验证是否存在未审批通过的申请单，需完成上一个申请才能继续申请下一个提现
-		List<DtsAccountTrace> traceList = accountService.getAccountTraceList(userId,BrokerageTypeEnum.SYS_APPLY.getType(),BrokerageTypeEnum.USER_APPLY.getType());
-		if (traceList.size() > 0 ) {
+		List<DtsAccountTrace> traceList = accountService.getAccountTraceList(userId,(byte)0);
+		if (traceList.size() > 0) {
 			logger.error("提现申请失败:{}", WxResponseCode.APPLY_WITHDRAWAL_EXIST.desc());
 			return WxResponseUtil.fail(WxResponseCode.APPLY_WITHDRAWAL_EXIST);
 		}
-		// 生成提现申请记录到账户跟踪表
-		try {
-			accountService.addExtractRecord(userId, applyAmt, mobile, code, remainAmount);
-		} catch (Exception e) {
-			logger.error("提现申请失败,生成提现申请记录到账户跟踪表失败：userId:{}", userId);
-			e.printStackTrace();
-			return ResponseUtil.fail();
+
+		LocalDateTime startTime = LocalDateTime.now().minusDays(DtsAccountService.TWO_MONTH_DAYS);
+		LocalDateTime endTime = LocalDateTime.now().minusDays(DtsAccountService.ONE_WEEK_DAYS);
+		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		
+		//获取未结算的金额
+		BigDecimal unSettleAmount = accountService.getUnSettleAmount(userId,startTime.format(df),endTime.format(df));
+		if (unSettleAmount != null && unSettleAmount.compareTo(new BigDecimal(0)) > 0) {
+			accountService.settleApplyTrace(userId, startTime.format(df),endTime.format(df),BrokerageTypeEnum.USER_APPLY.getType().intValue(), unSettleAmount,mobile);
 		}
 
 		logger.info("【请求结束】提现申请成功！");

@@ -18,7 +18,14 @@ public interface AccountMapperEx {
 
 	List<Integer> getShareUserId();
 
-	BigDecimal getLastMonthSettleMoney(@Param("sharedUserId") Integer sharedUserId,
+	/**
+	  * 获取用户时间范围内待结算的金额
+	 * @param sharedUserId
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	BigDecimal getToSettleMoney(@Param("sharedUserId") Integer sharedUserId,
 			@Param("startTime") String startTime, @Param("endTime") String endTime);
 
 	/**
@@ -70,4 +77,17 @@ public interface AccountMapperEx {
 	 */
 	List<DtsOrder> querySettlementOrder(@Param("sharedUserId") Integer sharedUserId,
 			@Param("conditionSql") String conditionSql);
+
+	/**
+	 * 获取用户的未结算佣金
+	 * @param userId
+	 * @return
+	 */
+	BigDecimal getUserUnOrderSettleMoney(@Param("userId") Integer userId);
+
+	/**
+	 * 将用户订单的的状态调整为已结算
+	 * @param userId
+	 */
+	void setUserOrderSettleStaus(@Param("userId") Integer userId);
 }

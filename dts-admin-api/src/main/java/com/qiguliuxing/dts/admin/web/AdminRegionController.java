@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
+import com.qiguliuxing.dts.admin.util.AuthSupport;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.core.validator.Order;
 import com.qiguliuxing.dts.core.validator.Sort;
@@ -43,7 +44,7 @@ public class AdminRegionController {
 			@RequestParam(defaultValue = "10") Integer limit,
 			@Sort(accepts = { "id" }) @RequestParam(defaultValue = "id") String sort,
 			@Order @RequestParam(defaultValue = "desc") String order) {
-		logger.info("【请求开始】行政区域管理->查询,请求参数,name:{},code:{},page:{}", name, code, page);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 行政区域管理->查询,请求参数,name:{},code:{},page:{}", name, code, page);
 
 		List<DtsRegion> regionList = regionService.querySelective(name, code, page, limit, sort, order);
 		long total = PageInfo.of(regionList).getTotal();

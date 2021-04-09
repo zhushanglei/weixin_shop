@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.admin.annotation.RequiresPermissionsDesc;
+import com.qiguliuxing.dts.admin.util.AuthSupport;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.core.validator.Order;
 import com.qiguliuxing.dts.core.validator.Sort;
@@ -49,7 +50,7 @@ public class AdminCouponController {
 			@RequestParam(defaultValue = "10") Integer limit,
 			@Sort @RequestParam(defaultValue = "add_time") String sort,
 			@Order @RequestParam(defaultValue = "desc") String order) {
-		logger.info("【请求开始】推广管理->优惠券管理->查询,请求参数:name:{},page:{}", name, page);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 推广管理->优惠券管理->查询,请求参数:name:{},page:{}", name, page);
 
 		List<DtsCoupon> couponList = couponService.querySelective(name, type, status, page, limit, sort, order);
 		long total = PageInfo.of(couponList).getTotal();
@@ -68,7 +69,7 @@ public class AdminCouponController {
 			@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer limit,
 			@Sort @RequestParam(defaultValue = "add_time") String sort,
 			@Order @RequestParam(defaultValue = "desc") String order) {
-		logger.info("【请求开始】推广管理->优惠券管理->查询用户,请求参数:userId:{},couponId:{}", userId, couponId);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 推广管理->优惠券管理->查询用户,请求参数:userId:{},couponId:{}", userId, couponId);
 
 		List<DtsCouponUser> couponList = couponUserService.queryList(userId, couponId, status, page, limit, sort,
 				order);
@@ -93,7 +94,7 @@ public class AdminCouponController {
 	@RequiresPermissionsDesc(menu = { "推广管理", "优惠券管理" }, button = "添加")
 	@PostMapping("/create")
 	public Object create(@RequestBody DtsCoupon coupon) {
-		logger.info("【请求开始】推广管理->优惠券管理->添加,请求参数:{}", JSONObject.toJSONString(coupon));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 推广管理->优惠券管理->添加,请求参数:{}", JSONObject.toJSONString(coupon));
 
 		Object error = validate(coupon);
 		if (error != null) {
@@ -116,7 +117,7 @@ public class AdminCouponController {
 	@RequiresPermissionsDesc(menu = { "推广管理", "优惠券管理" }, button = "详情")
 	@GetMapping("/read")
 	public Object read(@NotNull Integer id) {
-		logger.info("【请求开始】推广管理->优惠券管理->详情,请求参数,id:{}", id);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 推广管理->优惠券管理->详情,请求参数,id:{}", id);
 
 		DtsCoupon coupon = couponService.findById(id);
 
@@ -128,7 +129,7 @@ public class AdminCouponController {
 	@RequiresPermissionsDesc(menu = { "推广管理", "优惠券管理" }, button = "编辑")
 	@PostMapping("/update")
 	public Object update(@RequestBody DtsCoupon coupon) {
-		logger.info("【请求开始】推广管理->优惠券管理->编辑,请求参数:{}", JSONObject.toJSONString(coupon));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 推广管理->优惠券管理->编辑,请求参数:{}", JSONObject.toJSONString(coupon));
 
 		Object error = validate(coupon);
 		if (error != null) {
@@ -146,7 +147,7 @@ public class AdminCouponController {
 	@RequiresPermissionsDesc(menu = { "推广管理", "优惠券管理" }, button = "删除")
 	@PostMapping("/delete")
 	public Object delete(@RequestBody DtsCoupon coupon) {
-		logger.info("【请求开始】推广管理->优惠券管理->删除,请求参数:{}", JSONObject.toJSONString(coupon));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 推广管理->优惠券管理->删除,请求参数:{}", JSONObject.toJSONString(coupon));
 
 		couponService.deleteById(coupon.getId());
 

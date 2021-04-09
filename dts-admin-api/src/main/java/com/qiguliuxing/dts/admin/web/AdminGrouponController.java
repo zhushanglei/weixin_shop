@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.admin.annotation.RequiresPermissionsDesc;
+import com.qiguliuxing.dts.admin.service.AdminDataAuthService;
+import com.qiguliuxing.dts.admin.util.AuthSupport;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.core.validator.Order;
 import com.qiguliuxing.dts.core.validator.Sort;
@@ -44,18 +46,43 @@ public class AdminGrouponController {
 	private DtsGoodsService goodsService;
 	@Autowired
 	private DtsGrouponService grouponService;
+	@Autowired
+	private AdminDataAuthService adminDataAuthService;
 
 	@RequiresPermissions("admin:groupon:read")
 	@RequiresPermissionsDesc(menu = { "推广管理", "团购管理" }, button = "详情")
 	@GetMapping("/listRecord")
-	public Object listRecord(String grouponId, @RequestParam(defaultValue = "1") Integer page,
+	public Object listRecord(String rulesId, @RequestParam(defaultValue = "1") Integer page,
 			@RequestParam(defaultValue = "10") Integer limit,
 			@Sort @RequestParam(defaultValue = "add_time") String sort,
 			@Order @RequestParam(defaultValue = "desc") String order) {
-		logger.info("【请求开始】推广管理->团购管理->详情,请求参数:grouponId:{},page:{}", grouponId, page);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 推广管理->团购管理->详情,请求参数:rulesId:{},page:{}", rulesId, page);
 
-		List<DtsGroupon> grouponList = grouponService.querySelective(grouponId, page, limit, sort, order);
-		long total = PageInfo.of(grouponList).getTotal();
+		// 需要区分数据权限，如果属于品牌商管理员，则需要获取当前用户管理品牌店铺
+		List<Integer> brandIds = null;
+		if (adminDataAuthService.isBrandManager()) {
+			brandIds = adminDataAuthService.getBrandIds();
+			logger.info("运营商管理角色操作，需控制数据权限，brandIds:{}", JSONObject.toJSONString(brandIds));
+
+			if (brandIds == null || brandIds.size() == 0) {// 如果尚未管理任何入驻店铺，则返回空数据
+				Map<String, Object> data = new HashMap<>();
+				data.put("total", 0L);
+				data.put("items", null);
+
+				logger.info("【请求结束】推广管理->团购管理->详情,响应结果:{}", JSONObject.toJSONString(data));
+				return ResponseUtil.ok(data);
+			}
+		}
+		
+		List<DtsGroupon> grouponList = null;
+		long total = 0L;
+		if (brandIds == null || brandIds.size() == 0) {
+			grouponList = grouponService.querySelective(rulesId, page, limit, sort, order);
+			total = PageInfo.of(grouponList).getTotal();
+		} else {
+			grouponList = grouponService.queryBrandGroupons(brandIds,rulesId, page, limit, sort, order);
+			total = PageInfo.of(grouponList).getTotal();
+		}
 
 		List<Map<String, Object>> records = new ArrayList<>();
 		for (DtsGroupon groupon : grouponList) {
@@ -91,10 +118,33 @@ public class AdminGrouponController {
 			@RequestParam(defaultValue = "10") Integer limit,
 			@Sort @RequestParam(defaultValue = "add_time") String sort,
 			@Order @RequestParam(defaultValue = "desc") String order) {
-		logger.info("【请求开始】推广管理->团购管理->查询,请求参数:goodsId:{},page:{}", goodsId, page);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 推广管理->团购管理->查询,请求参数:goodsId:{},page:{}", goodsId, page);
 
-		List<DtsGrouponRules> rulesList = rulesService.querySelective(goodsId, page, limit, sort, order);
-		long total = PageInfo.of(rulesList).getTotal();
+		// 需要区分数据权限，如果属于品牌商管理员，则需要获取当前用户管理品牌店铺
+		List<Integer> brandIds = null;
+		if (adminDataAuthService.isBrandManager()) {
+			brandIds = adminDataAuthService.getBrandIds();
+			logger.info("运营商管理角色操作，需控制数据权限，brandIds:{}", JSONObject.toJSONString(brandIds));
+
+			if (brandIds == null || brandIds.size() == 0) {// 如果尚未管理任何入驻店铺，则返回空数据
+				Map<String, Object> data = new HashMap<>();
+				data.put("total", 0L);
+				data.put("items", null);
+				
+				logger.info("【请求结束】推广管理->团购管理->查询,响应结果:{}", JSONObject.toJSONString(data));
+				return ResponseUtil.ok(data);
+			}
+		}
+		
+		List<DtsGrouponRules> rulesList = null;
+		long total = 0L;
+		if (brandIds == null || brandIds.size() == 0) {
+			rulesList = rulesService.querySelective(goodsId, page, limit, sort, order);
+			total = PageInfo.of(rulesList).getTotal();
+		} else {
+			rulesList = rulesService.queryBrandGrouponRules(brandIds,goodsId, page, limit, sort, order);
+			total = PageInfo.of(rulesList).getTotal();
+		}
 		Map<String, Object> data = new HashMap<>();
 		data.put("total", total);
 		data.put("items", rulesList);
@@ -128,7 +178,7 @@ public class AdminGrouponController {
 	@RequiresPermissionsDesc(menu = { "推广管理", "团购管理" }, button = "编辑")
 	@PostMapping("/update")
 	public Object update(@RequestBody DtsGrouponRules grouponRules) {
-		logger.info("【请求开始】推广管理->团购管理->编辑,请求参数:{}", JSONObject.toJSONString(grouponRules));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 推广管理->团购管理->编辑,请求参数:{}", JSONObject.toJSONString(grouponRules));
 
 		Object error = validate(grouponRules);
 		if (error != null) {
@@ -157,7 +207,7 @@ public class AdminGrouponController {
 	@RequiresPermissionsDesc(menu = { "推广管理", "团购管理" }, button = "添加")
 	@PostMapping("/create")
 	public Object create(@RequestBody DtsGrouponRules grouponRules) {
-		logger.info("【请求开始】推广管理->团购管理->添加,请求参数:{}", JSONObject.toJSONString(grouponRules));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 推广管理->团购管理->添加,请求参数:{}", JSONObject.toJSONString(grouponRules));
 
 		Object error = validate(grouponRules);
 		if (error != null) {
@@ -194,7 +244,7 @@ public class AdminGrouponController {
 	@RequiresPermissionsDesc(menu = { "推广管理", "团购管理" }, button = "删除")
 	@PostMapping("/delete")
 	public Object delete(@RequestBody DtsGrouponRules grouponRules) {
-		logger.info("【请求开始】推广管理->团购管理->删除,请求参数:{}", JSONObject.toJSONString(grouponRules));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 推广管理->团购管理->删除,请求参数:{}", JSONObject.toJSONString(grouponRules));
 
 		Integer id = grouponRules.getId();
 		if (id == null) {

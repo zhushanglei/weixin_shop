@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.admin.annotation.RequiresPermissionsDesc;
+import com.qiguliuxing.dts.admin.util.AuthSupport;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.core.validator.Order;
 import com.qiguliuxing.dts.core.validator.Sort;
@@ -44,7 +45,7 @@ public class AdminIssueController {
 			@RequestParam(defaultValue = "10") Integer limit,
 			@Sort @RequestParam(defaultValue = "add_time") String sort,
 			@Order @RequestParam(defaultValue = "desc") String order) {
-		logger.info("【请求开始】商场管理->通用问题->查询,请求参数:question:{},page:{}", question, page);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->通用问题->查询,请求参数:question:{},page:{}", question, page);
 
 		List<DtsIssue> issueList = issueService.querySelective(question, page, limit, sort, order);
 		long total = PageInfo.of(issueList).getTotal();
@@ -72,7 +73,7 @@ public class AdminIssueController {
 	@RequiresPermissionsDesc(menu = { "商场管理", "通用问题" }, button = "添加")
 	@PostMapping("/create")
 	public Object create(@RequestBody DtsIssue issue) {
-		logger.info("【请求开始】商场管理->通用问题->添加,请求参数:question:{},page:{}", JSONObject.toJSONString(issue));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->通用问题->添加,请求参数:question:{},page:{}", JSONObject.toJSONString(issue));
 
 		Object error = validate(issue);
 		if (error != null) {
@@ -87,7 +88,7 @@ public class AdminIssueController {
 	@RequiresPermissions("admin:issue:read")
 	@GetMapping("/read")
 	public Object read(@NotNull Integer id) {
-		logger.info("【请求开始】商场管理->通用问题->详情,请求参数,id:{}", id);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->通用问题->详情,请求参数,id:{}", id);
 
 		DtsIssue issue = issueService.findById(id);
 
@@ -99,7 +100,7 @@ public class AdminIssueController {
 	@RequiresPermissionsDesc(menu = { "商场管理", "通用问题" }, button = "编辑")
 	@PostMapping("/update")
 	public Object update(@RequestBody DtsIssue issue) {
-		logger.info("【请求开始】商场管理->通用问题->编辑,请求参数:{}", JSONObject.toJSONString(issue));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->通用问题->编辑,请求参数:{}", JSONObject.toJSONString(issue));
 
 		Object error = validate(issue);
 		if (error != null) {
@@ -118,7 +119,7 @@ public class AdminIssueController {
 	@RequiresPermissionsDesc(menu = { "商场管理", "通用问题" }, button = "删除")
 	@PostMapping("/delete")
 	public Object delete(@RequestBody DtsIssue issue) {
-		logger.info("【请求开始】商场管理->通用问题->删除,请求参数:{}", JSONObject.toJSONString(issue));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->通用问题->删除,请求参数:{}", JSONObject.toJSONString(issue));
 
 		Integer id = issue.getId();
 		if (id == null) {

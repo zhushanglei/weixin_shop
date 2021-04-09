@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.admin.annotation.RequiresPermissionsDesc;
+import com.qiguliuxing.dts.admin.util.AuthSupport;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.core.validator.Order;
 import com.qiguliuxing.dts.core.validator.Sort;
@@ -44,7 +45,7 @@ public class AdminKeywordController {
 			@RequestParam(defaultValue = "10") Integer limit,
 			@Sort @RequestParam(defaultValue = "add_time") String sort,
 			@Order @RequestParam(defaultValue = "desc") String order) {
-		logger.info("【请求开始】商场管理->关键词->查询,请求参数:keyword:{},url:{},page:{}", keyword, url, page);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->关键词->查询,请求参数:keyword:{},url:{},page:{}", keyword, url, page);
 
 		List<DtsKeyword> brandList = keywordService.querySelective(keyword, url, page, limit, sort, order);
 		long total = PageInfo.of(brandList).getTotal();
@@ -72,7 +73,7 @@ public class AdminKeywordController {
 	@RequiresPermissionsDesc(menu = { "商场管理", "关键词" }, button = "添加")
 	@PostMapping("/create")
 	public Object create(@RequestBody DtsKeyword keywords) {
-		logger.info("【请求开始】商场管理->关键词->添加,请求参数:{}", JSONObject.toJSONString(keywords));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->关键词->添加,请求参数:{}", JSONObject.toJSONString(keywords));
 
 		Object error = validate(keywords);
 		if (error != null) {
@@ -88,7 +89,7 @@ public class AdminKeywordController {
 	@RequiresPermissionsDesc(menu = { "商场管理", "关键词" }, button = "详情")
 	@GetMapping("/read")
 	public Object read(@NotNull Integer id) {
-		logger.info("【请求开始】商场管理->关键词->详情,请求参数,id:{}", id);
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->关键词->详情,请求参数,id:{}", id);
 
 		DtsKeyword keywords = keywordService.findById(id);
 
@@ -100,7 +101,7 @@ public class AdminKeywordController {
 	@RequiresPermissionsDesc(menu = { "商场管理", "关键词" }, button = "编辑")
 	@PostMapping("/update")
 	public Object update(@RequestBody DtsKeyword keywords) {
-		logger.info("【请求开始】商场管理->关键词->编辑,请求参数:{}", JSONObject.toJSONString(keywords));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->关键词->编辑,请求参数:{}", JSONObject.toJSONString(keywords));
 
 		Object error = validate(keywords);
 		if (error != null) {
@@ -119,7 +120,7 @@ public class AdminKeywordController {
 	@RequiresPermissionsDesc(menu = { "商场管理", "关键词" }, button = "删除")
 	@PostMapping("/delete")
 	public Object delete(@RequestBody DtsKeyword keyword) {
-		logger.info("【请求开始】商场管理->关键词->删除,请求参数:{}", JSONObject.toJSONString(keyword));
+		logger.info("【请求开始】操作人:[" + AuthSupport.userName()+ "] 商场管理->关键词->删除,请求参数:{}", JSONObject.toJSONString(keyword));
 
 		Integer id = keyword.getId();
 		if (id == null) {

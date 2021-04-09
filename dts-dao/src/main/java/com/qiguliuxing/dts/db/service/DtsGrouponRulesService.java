@@ -4,6 +4,7 @@ import com.alibaba.druid.util.StringUtils;
 import com.github.pagehelper.PageHelper;
 import com.qiguliuxing.dts.db.dao.DtsGoodsMapper;
 import com.qiguliuxing.dts.db.dao.DtsGrouponRulesMapper;
+import com.qiguliuxing.dts.db.dao.ex.GrouponMapperEx;
 import com.qiguliuxing.dts.db.domain.DtsGoods;
 import com.qiguliuxing.dts.db.domain.DtsGrouponRules;
 import com.qiguliuxing.dts.db.domain.DtsGrouponRulesExample;
@@ -23,6 +24,9 @@ public class DtsGrouponRulesService {
 	private DtsGrouponRulesMapper mapper;
 	@Resource
 	private DtsGoodsMapper goodsMapper;
+	@Resource
+	private GrouponMapperEx grouponMapperEx;
+	
 	private DtsGoods.Column[] goodsColumns = new DtsGoods.Column[] { DtsGoods.Column.id, DtsGoods.Column.name,
 			DtsGoods.Column.brief, DtsGoods.Column.picUrl, DtsGoods.Column.counterPrice, DtsGoods.Column.retailPrice };
 
@@ -132,5 +136,36 @@ public class DtsGrouponRulesService {
 	public int updateById(DtsGrouponRules grouponRules) {
 		grouponRules.setUpdateTime(LocalDateTime.now());
 		return mapper.updateByPrimaryKeySelective(grouponRules);
+	}
+
+	/**
+	 * 查询品牌入驻管理员团购规则
+	 * @param brandIds
+	 * @param goodsId
+	 * @param page
+	 * @param limit
+	 * @param sort
+	 * @param order
+	 * @return
+	 */
+	public List<DtsGrouponRules> queryBrandGrouponRules(List<Integer> brandIds, String goodsId, Integer page,
+			Integer size, String sort, String order) {
+		String orderBySql = null;
+		if (!StringUtils.isEmpty(sort) && !StringUtils.isEmpty(order)) {
+			orderBySql = "o."+sort + " " + order;
+		}
+		
+		String brandIdsSql = null;
+		if (brandIds != null) {
+			brandIdsSql = "";
+			for (Integer brandId : brandIds) {
+				brandIdsSql += "," + brandId;
+			}
+			brandIdsSql = " and g.brand_id in (" + brandIdsSql.substring(1) + ") ";
+		}
+		
+		PageHelper.startPage(page, size);
+		
+		return grouponMapperEx.queryBrandGrouponRules(goodsId,orderBySql,brandIdsSql);
 	}
 }

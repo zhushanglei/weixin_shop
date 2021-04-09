@@ -128,7 +128,7 @@ public class DtsGoodsService {
 	}
 
 	public List<DtsGoods> querySelective(String goodsSn, String name, Integer page, Integer size, String sort,
-			String order) {
+			String order,List<Integer> brandIds) {
 		DtsGoodsExample example = new DtsGoodsExample();
 		DtsGoodsExample.Criteria criteria = example.createCriteria();
 
@@ -139,6 +139,10 @@ public class DtsGoodsService {
 			criteria.andNameLike("%" + name + "%");
 		}
 		criteria.andDeletedEqualTo(false);
+		
+		if (brandIds != null && brandIds.size() > 0) {
+			criteria.andBrandIdIn(brandIds);
+		}
 
 		if (!StringUtils.isEmpty(sort) && !StringUtils.isEmpty(order)) {
 			example.setOrderByClause(sort + " " + order);

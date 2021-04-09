@@ -2,6 +2,7 @@ package com.qiguliuxing.dts.db.service;
 
 import com.github.pagehelper.PageHelper;
 import com.qiguliuxing.dts.db.dao.DtsCommentMapper;
+import com.qiguliuxing.dts.db.dao.ex.CommentMapperEx;
 import com.qiguliuxing.dts.db.domain.DtsComment;
 import com.qiguliuxing.dts.db.domain.DtsCommentExample;
 
@@ -16,6 +17,9 @@ import java.util.List;
 public class DtsCommentService {
 	@Resource
 	private DtsCommentMapper commentMapper;
+	
+	@Resource
+	private CommentMapperEx commentMapperEx;
 
 	public List<DtsComment> queryGoodsByGid(Integer id, int offset, int limit) {
 		DtsCommentExample example = new DtsCommentExample();
@@ -100,5 +104,39 @@ public class DtsCommentService {
 
 	public DtsComment findById(Integer id) {
 		return commentMapper.selectByPrimaryKey(id);
+	}
+
+	/**
+	 * 入驻店铺对应商品的评价
+	 * @param brandIds
+	 * @param userId
+	 * @param valueId
+	 * @param page
+	 * @param limit
+	 * @param sort
+	 * @param order
+	 * @return
+	 */
+	public List<DtsComment> queryBrandCommentSelective(List<Integer> brandIds, String userId, String valueId,
+			Integer page, Integer size, String sort, String order) {
+		
+		String orderBySql = null;
+		if (!StringUtils.isEmpty(sort) && !StringUtils.isEmpty(order)) {
+			orderBySql = "o."+sort + " " + order;
+		}
+		
+		String brandIdsSql = null;
+		if (brandIds != null) {
+			brandIdsSql = "";
+			for (Integer brandId : brandIds) {
+				brandIdsSql += "," + brandId;
+			}
+			brandIdsSql = " and g.brand_id in (" + brandIdsSql.substring(1) + ") ";
+		}
+
+		PageHelper.startPage(page, size);
+		
+		Byte type = (byte) 0;//品牌入驻管理员限定只查商品评论
+		return commentMapperEx.queryBrandComment(type,userId,valueId,orderBySql,brandIdsSql);
 	}
 }

@@ -25,7 +25,9 @@ public enum AdminResponseCode {
 	// USER_NAME_EXIST(633,""),
 	// USER_MOBILE_EXIST(634,""),
 	ROLE_NAME_EXIST(640, "角色已经存在"), ROLE_SUPER_SUPERMISSION(641, "当前角色的超级权限不能变更"),
-	ARTICLE_NAME_EXIST(642,"公告或通知文章已经存在");
+	ARTICLE_NAME_EXIST(642,"公告或通知文章已经存在"),
+	AUTH_CAPTCHA_FREQUENCY(643,"验证码请求过于频繁"),
+	AUTH_CAPTCHA_ERROR(644,"验证码错误"), AUTH_CAPTCHA_EXPIRED(645,"验证码过期");
 
 	private final Integer code;
 	private final String desc;

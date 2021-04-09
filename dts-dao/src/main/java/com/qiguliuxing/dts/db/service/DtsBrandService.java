@@ -84,6 +84,15 @@ public class DtsBrandService {
 		example.or().andDeletedEqualTo(false);
 		return brandMapper.selectByExample(example);
 	}
+	
+	public List<DtsBrand> getAdminBrands(Integer adminId) {
+		if (adminId == null) {
+			return null;
+		}
+		DtsBrandExample example = new DtsBrandExample();
+		example.or().andDeletedEqualTo(false).andAdminIdEqualTo(adminId);
+		return brandMapper.selectByExample(example);
+	}
 
 	/**
 	 * 根据分类id获取分类名
@@ -94,4 +103,5 @@ public class DtsBrandService {
 		DtsCategory dtsCategory = categoryMapper.selectByPrimaryKey(categoryId);
 		return dtsCategory == null ? "综合" : dtsCategory.getName();
 	}
+	
 }

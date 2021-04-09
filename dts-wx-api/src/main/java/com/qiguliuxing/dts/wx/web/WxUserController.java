@@ -74,11 +74,14 @@ public class WxUserController {
 			totalAmount = userAccount.getTotalAmount();
 			remainAmount = userAccount.getRemainAmount();
 		}
+		
+		// 可提现金额 = 已结算未提现 remainAmount + 未结算 unSettleAmount
+		BigDecimal unSettleAmount = accountService.getUnSettleAmount(userId);
 		data.put("totalAmount", totalAmount);
-		data.put("remainAmount", remainAmount);
-
+		data.put("remainAmount", remainAmount.add(unSettleAmount));
+		
 		// 查询用户的优惠券
-		int total = couponService.queryUserCouponCnt(userId);
+		int total = couponService.queryTotal();
 		data.put("couponCount", total);
 
 		logger.info("【请求结束】用户个人页面数据,响应结果:{}", JSONObject.toJSONString(data));

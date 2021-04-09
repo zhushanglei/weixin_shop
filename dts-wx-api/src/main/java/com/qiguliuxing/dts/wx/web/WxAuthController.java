@@ -31,9 +31,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.qiguliuxing.dts.core.captcha.CaptchaCodeManager;
 import com.qiguliuxing.dts.core.consts.CommConsts;
 import com.qiguliuxing.dts.core.notify.NotifyService;
 import com.qiguliuxing.dts.core.notify.NotifyType;
+import com.qiguliuxing.dts.core.notify.SmsResult;
 import com.qiguliuxing.dts.core.type.UserTypeEnum;
 import com.qiguliuxing.dts.core.util.CharUtil;
 import com.qiguliuxing.dts.core.util.JacksonUtil;
@@ -47,7 +49,6 @@ import com.qiguliuxing.dts.wx.annotation.LoginUser;
 import com.qiguliuxing.dts.wx.dao.UserInfo;
 import com.qiguliuxing.dts.wx.dao.UserToken;
 import com.qiguliuxing.dts.wx.dao.WxLoginInfo;
-import com.qiguliuxing.dts.wx.service.CaptchaCodeManager;
 import com.qiguliuxing.dts.wx.service.UserTokenManager;
 import com.qiguliuxing.dts.wx.util.IpUtil;
 import com.qiguliuxing.dts.wx.util.WxResponseUtil;
@@ -272,9 +273,12 @@ public class WxAuthController {
 			return WxResponseUtil.fail(AUTH_CAPTCHA_UNSUPPORT);
 		}
 		String code = CharUtil.getRandomNum(6);
-		notifyService.notifySmsTemplate(phoneNumber, NotifyType.CAPTCHA, new String[] { code, "1" });
-
-		boolean successful = CaptchaCodeManager.addToCache(phoneNumber, code);
+		SmsResult smsResult = notifyService.notifySmsTemplate(phoneNumber, NotifyType.CAPTCHA, new String[] { code, "1" });
+        if (smsResult != null) {
+        	logger.info("*****腾讯云短信发送->请求验证码，短信发送结果：{}",JSONObject.toJSONString(smsResult));
+        }
+		
+		boolean successful = CaptchaCodeManager.addToCache(phoneNumber, code,1);
 		if (!successful) {
 			logger.error("请求验证码出错:{}", AUTH_CAPTCHA_FREQUENCY.desc());
 			return WxResponseUtil.fail(AUTH_CAPTCHA_FREQUENCY);
