@@ -3,11 +3,13 @@
 ### 介绍
 聚惠星商城 DTS-SHOP，基于 微信小程序 + springboot + vue 技术构建 ，支持单店铺，多店铺入驻的商城平台。项目包含 微信小程序，管理后台。基于java后台语言，已功能闭环，且达到商用标准的一套项目体系。
 
-### 技术栈
-![输入图片说明](https://images.gitee.com/uploads/images/2019/1128/231403_2801a293_365545.png "技术栈.png")
 
-### 平台功能介绍
-![输入图片说明](https://images.gitee.com/uploads/images/2019/1128/232156_2fa40a56_365545.jpeg "聚惠星商城.jpg")
+### 技术栈(VIP2.0版本）
+![输入图片说明](https://images.gitee.com/uploads/images/2021/0409/203303_06334c9d_365545.jpeg "技术栈.png")
+
+
+### 平台功能介绍(VIP2.0版本）
+![输入图片说明](https://images.gitee.com/uploads/images/2021/0409/203331_82f5bad0_365545.jpeg "聚惠星商城.jpg")
 
 ### 商城体验码
 <table border="0">
@@ -26,10 +28,17 @@
 </table>
 
 --------------------------------
-#### 其他说明
+#### 1.0版演示地址说明
  * 后台管理端演示网址：  https://www.shequlianshang.com/demo/#/login?redirect=%2Fdashboard
  * 系统管理员账户: dtsadmin  登录密码：dtsadmin
  * 入驻店铺管理员: dtsdemo   登录密码：dtsdemo
+
+#### 2.0版演示地址说明
+ * 后台管理端演示网址：  https://www.shequlianshang.com/admin
+ * 系统管理员账户: dtsadmin  登录密码：dtsadmin
+
+ * 商户管理端演示网址：  https://www.shequlianshang.com/merchant
+ * 系统管理员账户: dtsmerchant  登录密码：dtsmerchant
 
 #### 注意
 
@@ -88,6 +97,52 @@
      </td>
      <td valign="middle">
         <img width="100%" src="https://images.gitee.com/uploads/images/2019/1208/145413_c10771ac_365545.png">
+     </td>
+    </tr>
+</tbody>
+</table>
+
+
+### 2.0版本小程序演示图
+<table border="0">
+<tbody>
+   <tr>
+     <td valign="middle">
+        <img width="100%"  src="https://images.gitee.com/uploads/images/2021/0409/203022_56eed1fb_365545.jpeg">
+     </td>
+     <td valign="middle">
+        <img width="100%"  src="https://images.gitee.com/uploads/images/2021/0409/203611_837c7c82_365545.jpeg">
+     </td>
+    </tr>
+    <tr>
+     <td valign="middle">
+        <img width="100%"  src="https://images.gitee.com/uploads/images/2021/0409/203648_a46fdf21_365545.jpeg">
+     </td>
+     <td valign="middle">
+        <img width="100%"  src="https://images.gitee.com/uploads/images/2021/0409/203802_ad903a4d_365545.jpeg">
+     </td>
+    </tr>
+</tbody>
+</table>
+
+
+### 商户端后端演示图
+<table border="0">
+<tbody>
+   <tr>
+     <td valign="middle">
+        <img width="100%" src="https://images.gitee.com/uploads/images/2021/0409/204118_d407da11_365545.png">
+     </td>
+     <td valign="middle">
+        <img width="100%" src="https://images.gitee.com/uploads/images/2021/0409/204145_e680541e_365545.png">
+     </td>
+    </tr>
+    <tr>
+     <td valign="middle">
+        <img width="100%" src="https://images.gitee.com/uploads/images/2021/0409/204218_7a10609b_365545.png">
+     </td>
+     <td valign="middle">
+        <img width="100%" src="https://images.gitee.com/uploads/images/2021/0409/204241_ee13beed_365545.jpeg">
      </td>
     </tr>
 </tbody>
