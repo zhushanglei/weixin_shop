@@ -14,7 +14,7 @@
    <view class='wrapper'>
       <view class='nav acea-row row-middle'>
          <view class='item' hover-class='none' wx:if="{{userInfo.userLevel==2}}" bindtap="goBrokerage">
-            <view class='title'>当前佣金</view>
+            <view class='title'>可提佣金</view>
             <view class='text'><text class='iconfont icon-jinbi1' style="color:#FF654B;margin-right:8rpx;"></text> {{remainAmount || 0.00}}</view>
          </view>
          <view class='item' hover-class='none' wx:else>

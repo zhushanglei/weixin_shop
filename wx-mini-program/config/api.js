@@ -25,6 +25,8 @@ module.exports = {
   GoodsDetail: WxApiRoot + 'goods/detail', //获得商品的详情
   GoodsRelated: WxApiRoot + 'goods/related', //商品详情页的关联商品（大家都在看）
 
+  CreateShareImg: WxApiRoot + 'agency/createShareImg', //创建分享海报
+
   BrandList: WxApiRoot + 'brand/list', //品牌列表
   BrandDetail: WxApiRoot + 'brand/detail', //品牌详情
 
@@ -99,6 +101,7 @@ module.exports = {
   UserIndex: WxApiRoot + 'user/index', //个人页面用户相关信息
   BrokerageMain: WxApiRoot + 'brokerage/main',//佣金收益主页面
   SettleOrderList: WxApiRoot + 'brokerage/settleOrderList',//佣金收益主页面
+  ApplyWithdrawal: WxApiRoot + 'brokerage/applyWithdrawal',//佣金提现申请
   ExtractList: WxApiRoot + 'brokerage/extractList',//佣金账号提现记录
   ArticleDetail: WxApiRoot + 'article/detail',//公告详情
   ApplyAgency: WxApiRoot + 'user/applyAgency',//代理申请

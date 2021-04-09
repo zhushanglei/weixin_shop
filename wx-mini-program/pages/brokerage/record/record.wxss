@@ -24,7 +24,7 @@ page {
 }
 
 .address-list .l {
-  width: 155rpx;
+  width: 135rpx;
   height: 80rpx;
   overflow: hidden;
 }

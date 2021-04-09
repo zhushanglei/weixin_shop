@@ -3,17 +3,17 @@
     <view class="item" wx:for="{{accountTraceList}}" wx:key="id"  data-address-id="{{item.id}}">
       <view class="l">
         <view class="name">{{item.amount}}</view>
-        <view class="default" wx:if="{{item.type == 1}}">提现中</view>
-        <view class="default" wx:if="{{item.type == 2}}">已提现</view>
-        <view class="default" wx:if="{{item.type == 0}}">月结</view>
+        <view class="default" wx:if="{{item.status == 1}}">审批通过</view>
+        <view class="default" wx:if="{{item.status == 2}}">审批拒绝</view>
+        <view class="default" wx:if="{{item.status == 0}}">申请中</view>
       </view>
       <view class="c">
-        <view class="mobile" wx:if="{{item.type == 1}}">{{item.mobile}}</view>
-        <view class="mobile" wx:if="{{item.type == 0}}">系统</view>
-        <view class="address">时间：{{item.traceTime}}</view>
+        <view class="mobile" wx:if="{{item.type == 1}}">个人申请</view>
+        <view class="mobile" wx:if="{{item.type == 0}}">系统月结</view>
+        <view class="address">时间：{{item.addTime}}</view>
       </view>
       <view class="r">
-        <view class="del">余额：{{item.remainAmount}}</view>
+        <view class="del">总额：{{item.totalAmount}}</view>
       </view>
     </view>
   </view>

@@ -51,7 +51,18 @@ Page({
   },
 
   shareFriendOrCircle: function() {
-    //var that = this;
+    let that = this;
+	util.request(api.CreateShareImg, {
+	   shareObjId: that.data.id,
+	   type:1 //商品类型的海报图
+	}, 'POST').then(function(res) {
+	   if (res.errno === 0) {
+	      that.setData({
+	    	  shareImage: res.data.shareUrl
+	      });
+	   }
+	});
+	
     if (this.data.openShare === false) {
       this.setData({
         openShare: !this.data.openShare
@@ -170,7 +181,7 @@ Page({
           specificationList: res.data.specificationList,
           productList: res.data.productList,
           userHasCollect: res.data.userHasCollect,
-          shareImage: res.data.shareImage,
+          shareImage: res.data.shareImage == null?"":res.data.shareImage,
           checkedSpecPrice: res.data.info.retailPrice,
           groupon: res.data.groupon
         });

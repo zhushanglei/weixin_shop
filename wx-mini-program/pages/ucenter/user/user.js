@@ -51,6 +51,15 @@ Page({
       return;
     }
 
+    if (!this.data.userInfo.phone || this.data.userInfo.phone.length == 0) {
+        wx.showToast({
+          title: '绑定失败：请先绑定手机号',
+          icon: 'none',
+          duration: 3000
+        });
+        return;
+     }
+    
     util.request(api.ApplyAgency, { desc: "代理申请" }, 'POST').then(function (res) {
       if (res.errno === 0) {
         let userInfo = wx.getStorageSync('userInfo');
@@ -103,6 +112,39 @@ Page({
         });
       }
     });
+  },
+  // 保存推广码到相册
+  saveShare: function () {
+    let that = this;
+    wx.downloadFile({
+      url: that.data.userSharedUrl,
+      success: function (res) {
+        console.log(res)
+        wx.saveImageToPhotosAlbum({
+          filePath: res.tempFilePath,
+          success: function (res) {
+            wx.showModal({
+              title: '推广码下载',
+              content: '推广二维码成功保存到相册!!',
+              showCancel: false,
+              confirmText: '好的',
+              confirmColor: '#a78845',
+              success: function (res) {
+                if (res.confirm) {
+                  console.log('用户点击确定');
+                }
+              }
+            })
+          },
+          fail: function (res) {
+            console.log('fail')
+          }
+        })
+      },
+      fail: function () {
+        console.log('fail')
+      }
+    })
   },
   exitLogin: function () {
     wx.showModal({

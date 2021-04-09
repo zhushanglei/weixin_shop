@@ -1,5 +1,7 @@
 var api = require('../../../config/api.js');
+var util = require('../../../utils/util.js');
 var check = require('../../../utils/check.js');
+var user = require('../../../utils/user.js');
 
 var app = getApp();
 Page({
@@ -82,7 +84,7 @@ Page({
   },
   goWithdrawal: function() {
     var that = this;
-    if (this.data.mobile.length == 0 || this.data.code.length == 0) {
+    if (this.data.mobile.length == 0) {
       wx.showModal({
         title: '错误信息',
         content: '手机号和验证码不能为空',
@@ -100,7 +102,20 @@ Page({
       return false;
     }
     //调用后台申请提现接口
-
+    util.request(api.ApplyWithdrawal, {
+      mobile: that.data.mobile,
+      amt: that.data.amt
+    }, 'POST').then(function (res) {
+        if (res.errno === 0) {
+          wx.showToast({
+            title: '提现申请成功,等待审批结算'
+          });
+          util.redirect('/pages/brokerage/record/record');
+        } else {
+          util.showErrorToast(res.errmsg);
+        }
+      });
+   
   },
   bindMobileInput: function(e) {
     this.setData({

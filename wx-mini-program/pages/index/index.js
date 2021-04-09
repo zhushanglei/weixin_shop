@@ -88,6 +88,17 @@ Page({
       let _type = info_arr[0];
       let id = info_arr[1];
 
+      let shareUserId = null;//默认用户
+      if (info_arr.length == 4 && info_arr[2] == 'user'){
+    	  shareUserId = info_arr[3];
+      } else if (_type == 'user'){
+    	  shareUserId = id;
+      }
+
+	  if (shareUserId != null){
+	  	 wx.setStorageSync('shareUserId', id);
+	  }
+  	
       if (_type == 'goods') {
         wx.navigateTo({
           url: '../goods/goods?id=' + id
@@ -105,9 +116,6 @@ Page({
                url: '../topicDetail/topicDetail?id=' + id
              });
       } else {
-    	if (id != null){
-    		wx.setStorageSync('shareUserId', id);
-    	}
         wx.navigateTo({
           url: '../index/index'
         });
