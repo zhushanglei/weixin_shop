@@ -19,7 +19,7 @@
 		}
 	},
 	"compileType": "miniprogram",
-	"libVersion": "2.9.4",
+	"libVersion": "2.16.0",
 	"appid": "wx4901b319ace4f88a",
 	"projectname": "dts-shop",
 	"simulatorType": "wechat",
