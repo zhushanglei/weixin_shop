@@ -11,17 +11,12 @@
 ### 平台功能介绍(VIP2.0版本）
 ![输入图片说明](https://images.gitee.com/uploads/images/2021/0409/203331_82f5bad0_365545.jpeg "聚惠星商城.jpg")
 
-### 商城体验码
+### 小程序体验码
 <table border="0">
 <tbody>
    <tr>
-     <td align="left" valign="middle">
+     <td valign="middle">
         <img width="50%" src="https://images.gitee.com/uploads/images/2019/1130/231510_d7ac1c17_365545.jpeg">
-     </td>
-     <td align="right" valign="middle">
-	<a href="https://jq.qq.com/?_wv=1027&k=5yH6R5E">
-           <img width="300" height="300" src="https://images.gitee.com/uploads/images/2019/1208/142050_9dd4d015_365545.png?raw=true">
-	</a>
      </td>
     </tr>
 </tbody>
@@ -155,3 +150,7 @@
 > 3. 本项目代码开源[LGPL]，请自觉遵守使用协议，请勿对开源软件进行任何形式的售卖，别给公司或商家带来不必要麻烦，如需要去版权或vip版本（优先处理技术问题，功能优化，bug更少），请联系qq群管理员授权和索要vip版本代码
 > 4. 请大家共同维护开源，促进开源软件和发展，欢迎举报违规，侵犯版权必究!
 > 5. 如果你觉得本开源软件对你有用，欢迎捐赠此项目!
+
+## 聚惠星官方技术交流群
+
+QQ群： [![加入QQ群](https://img.shields.io/badge/即将满-686432822-orange.svg)](https://jq.qq.com/?_wv=1027&k=5yH6R5E) [![加入QQ群](https://img.shields.io/badge/692542312-green.svg)](https://qm.qq.com/cgi-bin/qm/qr?k=K32CmJS5Pehi4E3QGYYwgkxAbdePXi1y&jump_from=webapi)  点击按钮入群。
