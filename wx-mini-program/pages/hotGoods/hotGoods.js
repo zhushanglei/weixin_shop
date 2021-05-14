@@ -15,6 +15,7 @@ Page({
     currentSortType: 'default',
     currentSort: 'browse',
     currentSortOrder: 'desc',
+    isSearch: true,
     page: 1,
     size: 10,
     totalPages: 1
@@ -47,9 +48,10 @@ Page({
       .then(function(res) {
         if (res.errno === 0) {
           that.setData({
-            goodsList: that.data.goodsList.concat(res.data.goodsList),
+            goodsList: that.data.isSearch ? res.data.goodsList : that.data.goodsList.concat(res.data.goodsList),
             filterCategory: res.data.filterCategoryList,
-            totalPages: res.data.totalPages
+            totalPages: res.data.totalPages,
+            isSearch: false
           });
         }
       });
@@ -83,7 +85,8 @@ Page({
           categoryFilter: !this.data.categoryFilter,
           currentSortType: 'category',
           currentSort: 'add_time',
-          currentSortOrder: 'desc'
+          currentSortOrder: 'desc',
+          isSearch: true
         });
         break;
       case 'priceSort':
@@ -94,7 +97,8 @@ Page({
           currentSortType: 'price',
           currentSort: 'retail_price',
           currentSortOrder: tmpSortOrder,
-          categoryFilter: false
+          categoryFilter: false,
+          isSearch: true
         });
 
         this.getGoodsList();
@@ -107,7 +111,8 @@ Page({
           currentSortType: 'sales',
           currentSort: 'sales',
           currentSortOrder: tmpSortOrder,
-          categoryFilter: false
+          categoryFilter: false,
+          isSearch: true
         });
         this.getGoodsList();
         break;
@@ -118,6 +123,7 @@ Page({
           currentSort: 'add_time',
           currentSortOrder: 'desc',
           categoryFilter: false,
+          isSearch: true,
           categoryId: 0,
         });
         this.getGoodsList();
