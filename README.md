@@ -153,4 +153,4 @@
 
 ## 聚惠星官方技术交流群
 
-QQ群： [![加入QQ群](https://img.shields.io/badge/即将满-686432822-orange.svg)](https://jq.qq.com/?_wv=1027&k=5yH6R5E) [![加入QQ群](https://img.shields.io/badge/692542312-green.svg)](https://qm.qq.com/cgi-bin/qm/qr?k=K32CmJS5Pehi4E3QGYYwgkxAbdePXi1y&jump_from=webapi)  点击按钮入群。
+QQ群： [![加入QQ群](https://img.shields.io/badge/已满-686432822-red.svg)](https://jq.qq.com/?_wv=1027&k=5yH6R5E) [![加入QQ群](https://img.shields.io/badge/点击加入-692542312-green.svg)](https://qm.qq.com/cgi-bin/qm/qr?k=K32CmJS5Pehi4E3QGYYwgkxAbdePXi1y&jump_from=webapi)  点击按钮入群。
