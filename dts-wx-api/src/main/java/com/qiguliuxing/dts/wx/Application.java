@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
- * 服务启动类
+ * 小程序服务启动类
  * 
  * @author CHENBO
  * @QQ:623659388
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableScheduling
 public class Application {
-
+	// 小程序后台服务启动类
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
