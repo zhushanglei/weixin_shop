@@ -11,9 +11,9 @@ spring:
 
 
 server:
-  port: 8083
+  port: @api.admin.port@
   servlet:
-    context-path: /demo
+    context-path: /
 
 logging:
   level:
@@ -22,3 +22,7 @@ logging:
     org.mybatis:  ERROR
     com.qiguliuxing.dts.admin:  DEBUG
     com.qiguliuxing.dts:  INFO
+
+mybatis:
+  configuration:
+    mapUnderscoreToCamelCase: true

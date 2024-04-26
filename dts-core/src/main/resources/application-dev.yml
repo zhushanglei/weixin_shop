@@ -98,7 +98,7 @@ dts:
     local:
       storagePath: dts/storage
       # 这个地方应该是wx模块的WxStorageController的fetch方法对应的地址
-      address: http://localhost:8080/demo/storage/
+      address: http://localhost:8080/storage/
     # 阿里云对象存储配置信息
     aliyun:
       endpoint: oss-cn-guangzhou.aliyuncs.com
@@ -128,7 +128,7 @@ pagehelper:
 spring:
   datasource:
     druid:
-      url:  jdbc:mysql://localhost:3306/dts-demo?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true&verifyServerCertificate=false&useSSL=false
+      url:  jdbc:mysql://localhost:3306/dts-gitee?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true&verifyServerCertificate=false&useSSL=false
       driver-class-name:  com.mysql.jdbc.Driver
       username:  root
       password:  Ab888888

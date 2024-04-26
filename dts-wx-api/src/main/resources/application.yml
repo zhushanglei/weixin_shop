@@ -10,9 +10,9 @@ spring:
       location: /tmp/tomcat_upload
       
 server:
-  port: 8080
+  port: @api.wx.port@
   servlet:
-    context-path: /demo
+    context-path: /
 
 logging:
   level:
@@ -21,3 +21,7 @@ logging:
     org.mybatis:  ERROR
     com.qiguliuxing.dts.wx:  DEBUG
     com.qiguliuxing.dts:  INFO
+
+mybatis:
+  configuration:
+    mapUnderscoreToCamelCase: true
